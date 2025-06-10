@@ -1,0 +1,59 @@
+// 数据源定义
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 生成器定义
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 模型定义（多个）
+model Category {
+  id     Int      @id @default(autoincrement())
+  name   String
+  pid    Int?
+  icon   String?
+  user_id Int
+  user   User     @relation(fields: [user_id], references: [id])
+  @@map("category")
+}
+
+model UserOAuth {
+  id           Int      @id @default(autoincrement())
+  provider     String   // 如 "google", "github"
+  providerId   String   // 第三方用户唯一标识
+  accessToken  String   // 访问令牌
+  refreshToken String?  // 刷新令牌（可为空）
+  expiresAt    DateTime // token过期时间
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerId]) // 防止重复绑定
+  @@index([provider, providerId])  // 加快查询速度
+  @@map("user_oauth")
+}
+
+model User {
+  id            Int         @id @default(autoincrement())
+  username      String?     @unique // 允许为空，适配OAuth用户
+  password      String?     // 允许为空，适配OAuth用户
+  email         String?     @unique // 允许为空，适配OAuth用户
+  avatar        String?     // 头像URL
+  phone         String?     // 手机号（可选）
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  categories    Category[]  // 一对多关联
+  oAuthAccounts UserOAuth[] // 一对多关联
+  role         Role
+   
+  @@map("user")
+}
+
+enum Role {
+  ADMIN
+  USER
+
+  @@map("role") // 映射到数据库中的枚举名称
+}
