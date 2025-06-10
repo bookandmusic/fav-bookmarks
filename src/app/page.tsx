@@ -1,6 +1,7 @@
 "use client";
-import { LayoutContext } from "@/components/layout";
 import { useContext } from "react";
+
+import { LayoutContext } from "@/components/layout";
 
 export default function Home() {
   const { menuKey } = useContext(LayoutContext);

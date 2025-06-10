@@ -1,16 +1,16 @@
 "use client";
-import React, { createContext, useEffect, useMemo, useState } from "react";
-import Image from "next/image";
+import { Icon } from "@iconify/react";
 import {
-  ConfigProvider,
   ColorPicker,
+  ConfigProvider,
+  Drawer,
   Layout,
   Menu,
-  theme,
-  Drawer,
   MenuTheme,
+  theme,
 } from "antd";
-import { Icon } from "@iconify/react";
+import Image from "next/image";
+import React, { createContext, useEffect, useMemo, useState } from "react";
 
 const { Header, Sider, Content } = Layout;
 
@@ -107,7 +107,7 @@ export default function InnerLayout({
       menuKey,
       setMenuKey,
     }),
-    [dark, color, bgColor, primary, menuKey]
+    [dark, color, bgColor, primary, menuKey],
   );
   useEffect(() => {
     setBgColor(dark ? "#001529" : "#fff");
