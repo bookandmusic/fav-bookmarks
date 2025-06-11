@@ -10,7 +10,7 @@ export interface Category {
 export type CategoryList = Category[];
 
 export interface MenuItem {
-  key: string;
+  key: number;
   label: string;
   icon: React.ReactNode;
   href?: string;
