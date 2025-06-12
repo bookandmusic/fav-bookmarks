@@ -26,8 +26,9 @@ export const userService = {
     phone?: string;
     password?: string;
     role?: Role;
+    avatar?: string;
   }) {
-    const { email, name, phone, password, role } = data;
+    const { email, name, phone, password, role, avatar } = data;
     // 生成随机密码，因为 OAuth 用户不需要密码登录
     const randomPassword = Math.random().toString(36).slice(-8);
     const pwd = password || randomPassword;
@@ -40,6 +41,7 @@ export const userService = {
         password: hashedPassword,
         phone,
         role: role || Role.USER,
+        avatar,
       },
     });
   },

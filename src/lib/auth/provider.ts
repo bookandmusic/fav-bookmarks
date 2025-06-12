@@ -51,8 +51,10 @@ export const githubAuthProvider = GitHubProvider({
       const randomName = `${profile.login}_user${randomSuffix}`;
 
       const newUser = await userService.createUser({
-        email: profile.email!,
+        email: profile.email || "",
         name: randomName,
+        phone: profile.phone,
+        avatar: profile.avatar_url,
       });
 
       // 创建 OAuth 账户记录
@@ -67,9 +69,11 @@ export const githubAuthProvider = GitHubProvider({
 
       return {
         id: newUser.id.toString(),
-        name: newUser.username!,
-        email: newUser.email!,
-        image: profile.avatar_url,
+        name: newUser.username || "",
+        email: newUser.email || "",
+        avatar: newUser.avatar,
+        phone: newUser.phone,
+        role: newUser.role,
       };
     }
 
@@ -91,10 +95,12 @@ export const githubAuthProvider = GitHubProvider({
     }
 
     return {
-      id: profile.id.toString(),
-      name: profile.name || profile.login,
-      email: profile.email!,
-      image: profile.avatar_url,
+      id: user.id.toString(),
+      name: user.username || "",
+      email: user.email || "",
+      avatar: user.avatar,
+      phone: user.phone,
+      role: user.role,
     };
   },
 });
