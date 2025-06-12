@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 
 export const userService = {
   async findUserByUniqueKey(key: string) {
-    const user = prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: {
         OR: [{ email: key }, { username: key }, { phone: key }],
       },
@@ -33,7 +33,7 @@ export const userService = {
     const pwd = password || randomPassword;
     const hashedPassword = await bcrypt.hash(pwd, 10);
 
-    return prisma.user.create({
+    return await prisma.user.create({
       data: {
         email,
         username: name,

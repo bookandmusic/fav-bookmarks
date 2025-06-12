@@ -6,7 +6,7 @@ export const oauthService = {
     provider: string,
     providerId: string,
   ) {
-    return prisma.userOAuth.findFirst({
+    return await prisma.userOAuth.findFirst({
       where: {
         userId,
         provider,
@@ -23,7 +23,7 @@ export const oauthService = {
     expiresAt: Date;
     userId: number;
   }) {
-    return prisma.userOAuth.create({
+    return await prisma.userOAuth.create({
       data,
     });
   },
