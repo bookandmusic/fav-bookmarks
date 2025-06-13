@@ -27,4 +27,21 @@ export const oauthService = {
       data,
     });
   },
+  async updateUserOAuthAccount(params: {
+    id: number;
+    data: {
+      accessToken: string;
+      refreshToken?: string;
+      expiresAt: Date;
+    };
+  }) {
+    const { id, data } = params;
+
+    return await prisma.userOAuth.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  },
 };

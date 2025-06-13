@@ -1,8 +1,11 @@
 import { User as PrismaUser } from "@prisma/client";
 import { NextAuthOptions, Session, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
+import { GithubProfile } from "next-auth/providers/github";
 
 import { credentialsProvider, githubAuthProvider } from "@/lib/auth/provider";
+
+import { handleGitHubLogin } from "./handleGitHubLogin";
 
 declare module "next-auth" {
   interface User {
@@ -28,9 +31,6 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30天
   },
-  jwt: {
-    maxAge: 60 * 60 * 24 * 30, // 同步会话时长
-  },
   callbacks: {
     async jwt({ token, user }: { token: JWT; user: User | undefined }) {
       if (user) {
@@ -46,6 +46,15 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string;
       }
       return session;
+    },
+    async signIn({ account, profile }) {
+      if (account?.provider === "github" && profile) {
+        await handleGitHubLogin({
+          account,
+          profile: profile as GithubProfile,
+        });
+      }
+      return true;
     },
   },
   pages: {
