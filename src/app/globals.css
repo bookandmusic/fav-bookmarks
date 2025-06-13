@@ -1,14 +1,10 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "Alibaba PuHuiTi";
-  src:
-    url("https://at.alicdn.com/t/c/font_4095194_mqqdfki7a6.woff2")
-      format("woff2"),
-    url("https://at.alicdn.com/t/c/font_4095194_mqqdfki7a6.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+    font-family: 'Static';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Static'), url('https://fonts.cdnfonts.com/s/13068/Static.woff') format('woff');
 }
 
 :root {
@@ -33,14 +29,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  font-family:
-    "Alibaba PuHuiTi",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    "Helvetica Neue",
-    Arial,
-    sans-serif;
+  font-family: Static;
 }

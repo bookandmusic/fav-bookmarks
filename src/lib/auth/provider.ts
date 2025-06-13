@@ -8,15 +8,15 @@ import { userService } from "@/service/user";
 export const credentialsProvider = CredentialsProvider({
   name: "credentials",
   credentials: {
-    email: { label: "Email", type: "text" },
+    name: { label: "Name", type: "text" },
     password: { label: "Password", type: "password" },
   },
   async authorize(credentials): Promise<User | null> {
-    if (!credentials?.email || !credentials?.password) {
+    if (!credentials?.name || !credentials?.password) {
       throw new Error("凭证缺失");
     }
 
-    const user = await userService.findUserByUniqueKey(credentials.email);
+    const user = await userService.findUserByUniqueKey(credentials.name);
     if (
       !user ||
       !user.password ||
