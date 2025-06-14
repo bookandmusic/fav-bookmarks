@@ -18,7 +18,7 @@ import { useCategory } from "@/hooks/useCategory";
 import { useLayoutContext } from "@/hooks/useLayoutContext";
 import { useErrorNotification } from "@/hooks/useNotification";
 
-import { CategoryMenu, toMenuItems } from "./menu";
+import { CategoryMenu, toMenuItems } from "../menu";
 
 // UserInfoItem 组件
 const UserInfoItem = ({ label, value }: { label: string; value: string }) => (
@@ -61,7 +61,7 @@ const UserProfile = ({ user }: { user: User }) => {
   );
 };
 
-export default function InnerLayout({
+export function InnerLayout({
   user,
   children,
 }: {

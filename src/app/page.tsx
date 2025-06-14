@@ -1,36 +1,57 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { Card } from "antd";
+import Meta from "antd/es/card/Meta";
+import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
 
-import InnerLayout from "@/components/layout";
-import { FullScreenOverlay } from "@/components/loading";
-import { useLayoutContext } from "@/hooks/useLayoutContext";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { UserProfileCard } from "@/components/user-profile";
+import { authOptions } from "@/lib/auth/options";
+import { homeItems } from "@/lib/menu";
+import { userService } from "@/service/user";
 
-// 实际页面内容组件
-export default function Home() {
-  const { menuKey, primary } = useLayoutContext();
-  const { data, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-  }, [status, router]);
-
-  if (status === "authenticated" && data?.user) {
-    return (
-      <InnerLayout user={data.user}>
-        <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-          分类{menuKey}-颜色{primary}
-        </div>
-      </InnerLayout>
-    );
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return redirect("/login");
   }
+  const user = await userService.findUserByUniqueKey(session.user.email);
+
   return (
     <>
-      <FullScreenOverlay />
+      <div
+        className="flex flex-col w-full h-full min-h-screen"
+        style={{ backgroundImage: 'url("/bg.jpg")' }}
+      >
+        <Header userCard={<UserProfileCard user={user!} />} />
+
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-wrap justify-center gap-6 px-4 py-6">
+            {homeItems.map((item) => (
+              <Link href={item.href} key={item.key}>
+                <Card
+                  hoverable
+                  className="w-[260px]"
+                  cover={
+                    <Image
+                      width={260}
+                      height={260}
+                      className="object-cover"
+                      alt={item.title}
+                      src={item.cover}
+                    />
+                  }
+                >
+                  <Meta title={item.title} description={item.description} />
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+        <Footer />
+      </div>
     </>
   );
 }

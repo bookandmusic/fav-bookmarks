@@ -2,8 +2,6 @@ import "./globals.css";
 
 import type { Metadata } from "next";
 
-import { ProvidreLayout } from "@/components/provider";
-
 export const metadata: Metadata = {
   title: "FavBookmarks",
   description: "收藏夹管理网站",
@@ -17,9 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
-        <ProvidreLayout>{children}</ProvidreLayout>
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
