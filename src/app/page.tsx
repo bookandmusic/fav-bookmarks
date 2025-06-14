@@ -2,7 +2,6 @@ import { Card } from "antd";
 import Meta from "antd/es/card/Meta";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import { Footer } from "@/components/layout/footer";
@@ -14,10 +13,7 @@ import { userService } from "@/service/user";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  if (!session) {
-    return redirect("/login");
-  }
-  const user = await userService.findUserByUniqueKey(session.user.email);
+  const user = await userService.findUserByUniqueKey(session!.user.email);
 
   return (
     <>
