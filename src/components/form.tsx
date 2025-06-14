@@ -51,12 +51,7 @@ export function LoginCard({ error: initialError }: { error?: string }) {
 
   useEffect(() => {
     if (initialError) {
-      const errorMap: Record<string, string> = {
-        OAuthAccountNotLinked:
-          "该 GitHub 账号已绑定其他登录方式，请使用原方式登录",
-        AccessDenied: "访问被拒绝，请重试",
-      };
-      setError(errorMap[initialError] || "GitHub 登录失败，请稍后再试");
+      setError("第三方登录失败，请稍后再试");
     }
   }, [router, initialError]);
 
@@ -103,17 +98,11 @@ export function LoginCard({ error: initialError }: { error?: string }) {
       <Card
         style={{ width: 300 }}
         actions={[
-          <Button key={"github"} type="text" onClick={handleGitHubLogin}>
-            <Icon icon={"simple-icons:github"}></Icon>
-          </Button>,
-          <Button key={"google"} type="text">
-            <Icon icon={"simple-icons:google"}></Icon>
-          </Button>,
-          <Button key={"apple"} type="text">
-            <Icon icon={"simple-icons:apple"}></Icon>
-          </Button>,
           <Button key={"gitee"} type="text" onClick={handleGiteeLogin}>
             <Icon icon={"simple-icons:gitee"}></Icon>
+          </Button>,
+          <Button key={"github"} type="text" onClick={handleGitHubLogin}>
+            <Icon icon={"simple-icons:github"}></Icon>
           </Button>,
         ]}
         title={"登录"}

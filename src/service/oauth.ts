@@ -1,14 +1,9 @@
 import prisma from "@/lib/prisma";
 
 export const oauthService = {
-  async findUserOAuthAccount(
-    userId: number,
-    provider: string,
-    providerId: string,
-  ) {
+  async findUserOAuthAccount(provider: string, providerId: string) {
     return await prisma.userOAuth.findFirst({
       where: {
-        userId,
         provider,
         providerId,
       },

@@ -1,8 +1,4 @@
-import type { Account } from "next-auth";
 import { OAuthConfig } from "next-auth/providers/oauth";
-
-import { oauthService } from "@/service/oauth";
-import { userService } from "@/service/user";
 
 export interface GiteeProfile {
   id: number;
@@ -38,58 +34,3 @@ export const giteeProvider = {
     };
   },
 } satisfies OAuthConfig<GiteeProfile>;
-
-export async function handleGiteeLogin({
-  account,
-  profile,
-}: {
-  account: Account;
-  profile: GiteeProfile;
-}) {
-  if (!account || account.provider !== "gitee") return;
-  const provider = "gitee";
-  const providerId = profile.id.toString();
-
-  const tokenPayload = {
-    accessToken: account.access_token || "",
-    refreshToken: account.refresh_token || "",
-    expiresAt: account.expires_at
-      ? new Date(account.expires_at * 1000)
-      : new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-  };
-
-  let user = profile.email
-    ? await userService.findUserByUniqueKey(profile.email)
-    : undefined;
-  if (!user) {
-    const randomSuffix = Math.floor(Math.random() * 1000);
-    const name = `${profile.login}_user${randomSuffix}`;
-
-    user = await userService.createUser({
-      email: profile.email || "",
-      name,
-      avatar: profile.avatar_url,
-    });
-  }
-
-  const existingOAuth = await oauthService.findUserOAuthAccount(
-    user.id,
-    provider,
-    providerId,
-  );
-
-  if (!existingOAuth) {
-    await oauthService.createUserOAuthAccount({
-      provider,
-      providerId,
-      userId: user.id,
-      ...tokenPayload,
-    });
-  } else {
-    const { id } = existingOAuth;
-    await oauthService.updateUserOAuthAccount({
-      id,
-      data: tokenPayload,
-    });
-  }
-}

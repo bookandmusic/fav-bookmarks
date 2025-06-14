@@ -1,16 +1,12 @@
 import { NextAuthOptions, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
-import { GithubProfile } from "next-auth/providers/github";
 
 import { credentialsProvider } from "@/lib/auth/providers/credentials";
 import { userService } from "@/service/user";
 
-import {
-  GiteeProfile,
-  giteeProvider,
-  handleGiteeLogin,
-} from "./providers/gitee";
-import { githubAuthProvider, handleGitHubLogin } from "./providers/github";
+import { handleOAuthLogin, OAuthProfile } from "./handler";
+import { giteeProvider } from "./providers/gitee";
+import { githubAuthProvider } from "./providers/github";
 
 declare module "next-auth" {
   interface Session {
@@ -22,6 +18,14 @@ declare module "next-auth" {
       avatar?: string;
       phone?: string;
     };
+  }
+  interface User {
+    id: string;
+    name: string;
+    email: string;
+    role?: string;
+    avatar?: string;
+    phone?: string;
   }
 }
 
@@ -45,16 +49,8 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async signIn({ account, profile }) {
-      if (account?.provider === "github") {
-        await handleGitHubLogin({
-          account,
-          profile: profile as GithubProfile,
-        });
-      } else if (account?.provider === "gitee") {
-        await handleGiteeLogin({
-          account,
-          profile: profile as GiteeProfile,
-        });
+      if (account && profile) {
+        await handleOAuthLogin({ account, profile: profile as OAuthProfile });
       }
       return true;
     },
