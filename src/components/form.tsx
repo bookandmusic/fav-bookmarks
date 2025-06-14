@@ -65,6 +65,11 @@ export function LoginCard({ error: initialError }: { error?: string }) {
     setError("");
     await signIn("github", { callbackUrl: "/" });
   };
+  const handleGiteeLogin = async () => {
+    setIsLoading(true);
+    setError("");
+    await signIn("gitee", { callbackUrl: "/" });
+  };
   // form
   const [form] = Form.useForm();
   const onReset = () => {
@@ -107,7 +112,7 @@ export function LoginCard({ error: initialError }: { error?: string }) {
           <Button key={"apple"} type="text">
             <Icon icon={"simple-icons:apple"}></Icon>
           </Button>,
-          <Button key={"gitee"} type="text">
+          <Button key={"gitee"} type="text" onClick={handleGiteeLogin}>
             <Icon icon={"simple-icons:gitee"}></Icon>
           </Button>,
         ]}

@@ -1,57 +1,59 @@
-import { User as PrismaUser } from "@prisma/client";
-import { NextAuthOptions, Session, User } from "next-auth";
+import { NextAuthOptions, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { GithubProfile } from "next-auth/providers/github";
 
-import { credentialsProvider, githubAuthProvider } from "@/lib/auth/provider";
+import { credentialsProvider } from "@/lib/auth/providers/credentials";
+import { userService } from "@/service/user";
 
-import { handleGitHubLogin } from "./handleGitHubLogin";
+import {
+  GiteeProfile,
+  giteeProvider,
+  handleGiteeLogin,
+} from "./providers/gitee";
+import { githubAuthProvider, handleGitHubLogin } from "./providers/github";
 
 declare module "next-auth" {
-  interface User {
-    id: string;
-    name: string;
-    email: string;
-    role?: string;
-  }
   interface Session {
     user: {
       id: string;
       name: string;
       email: string;
       role?: string;
+      avatar?: string;
+      phone?: string;
     };
   }
 }
 
 export const authOptions: NextAuthOptions = {
-  providers: [credentialsProvider, githubAuthProvider],
+  providers: [credentialsProvider, githubAuthProvider, giteeProvider],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30天
+    maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user: User | undefined }) {
-      if (user) {
-        const prismaUser = user as unknown as PrismaUser;
-        token.id = prismaUser.id.toString(); // 确保id是字符串类型
-        token.role = prismaUser.role;
+    async jwt({ user, token }: { user: User; token: JWT }) {
+      if (user && user.email) {
+        const existUser = await userService.findUserByUniqueKey(user.email);
+        token.id = existUser?.id;
+        token.role = existUser?.role;
+        token.avatar = existUser?.avatar;
+        token.phone = existUser?.phone;
+        token.name = existUser?.username;
       }
       return token;
     },
-    async session({ session, token }: { session: Session; token: JWT }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
-      }
-      return session;
-    },
     async signIn({ account, profile }) {
-      if (account?.provider === "github" && profile) {
+      if (account?.provider === "github") {
         await handleGitHubLogin({
           account,
           profile: profile as GithubProfile,
+        });
+      } else if (account?.provider === "gitee") {
+        await handleGiteeLogin({
+          account,
+          profile: profile as GiteeProfile,
         });
       }
       return true;

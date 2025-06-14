@@ -1,8 +1,13 @@
 import type { Account } from "next-auth";
-import type { GithubProfile } from "next-auth/providers/github";
+import GitHubProvider, { GithubProfile } from "next-auth/providers/github";
 
 import { oauthService } from "@/service/oauth";
 import { userService } from "@/service/user";
+
+export const githubAuthProvider = GitHubProvider({
+  clientId: process.env.GITHUB_ID!,
+  clientSecret: process.env.GITHUB_SECRET!,
+});
 
 interface ExtendedGithubProfile extends GithubProfile {
   phone?: string;
@@ -54,7 +59,7 @@ export async function handleGitHubLogin({
   const existingOAuth = await oauthService.findUserOAuthAccount(
     user.id,
     provider,
-    providerId,
+    providerId
   );
 
   if (!existingOAuth) {
