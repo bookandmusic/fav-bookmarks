@@ -1,11 +1,11 @@
 "use Client";
 
+import { Category } from "@/types/category";
 import { useEffect, useState } from "react";
 
-import { CategoryList } from "@/types/menu";
 
 export function useCategory() {
-  const [categoryList, setCategoryList] = useState<CategoryList>([]);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {

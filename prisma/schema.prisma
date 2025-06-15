@@ -1,59 +1,129 @@
-// 数据源定义
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// 生成器定义
 generator client {
   provider = "prisma-client-js"
 }
 
-// 模型定义（多个）
-model Category {
-  id     Int      @id @default(autoincrement())
-  name   String
-  pid    Int?
-  icon   String?
-  user_id Int
-  user   User     @relation(fields: [user_id], references: [id])
-  @@map("category")
+model User {
+  id          Int          @id @default(autoincrement())
+  username    String?      @unique
+  password    String?
+  email       String?      @unique
+  avatar      String?
+  phone       String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  role        String
+
+  bookmarks   BookMark[]
+  projects    Project[]
+  categories  Category[]
+  tags        Tag[]
+  oauths      UserOAuth[]
+
+  @@map("user")
+  @@index([username])
+  @@index([email])
 }
 
 model UserOAuth {
-  id           Int      @id @default(autoincrement())
-  provider     String   // 如 "google", "github"
-  providerId   String   // 第三方用户唯一标识
-  accessToken  String   // 访问令牌
-  refreshToken String?  // 刷新令牌（可为空）
-  expiresAt    DateTime // token过期时间
+  id           Int       @id @default(autoincrement())
+  provider     String
+  providerId   String
+  accessToken  String
+  refreshToken String?
+  expiresAt    DateTime
   userId       Int
-  user         User     @relation(fields: [userId], references: [id])
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@unique([provider, providerId]) // 防止重复绑定
-  @@index([provider, providerId])  // 加快查询速度
+  @@unique([provider, providerId])
+  @@index([provider, providerId])
   @@map("user_oauth")
 }
 
-model User {
-  id            Int         @id @default(autoincrement())
-  username      String?     @unique // 允许为空，适配OAuth用户
-  password      String?     // 允许为空，适配OAuth用户
-  email         String?     @unique // 允许为空，适配OAuth用户
-  avatar        String?     // 头像URL
-  phone         String?     // 手机号（可选）
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  categories    Category[]  // 一对多关联
-  oAuthAccounts UserOAuth[] // 一对多关联
-  role         Role
-   
-  @@map("user")
+model Category {
+  id          Int         @id @default(autoincrement())
+  name        String
+  pid         Int?        // 父分类ID，可为空顶级分类
+  icon        String?
+  isPublic    Boolean       @default(false)
+  type        String 
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bookmarks   BookMark[]
+  projects    Project[]
+
+  @@map("category")
+  @@index([userId])
+  @@index([pid])
 }
 
-enum Role {
-  ADMIN
-  USER
+model BookMark {
+  id          Int         @id @default(autoincrement())
+  title       String
+  url         String
+  icon        String?
+  description String?
+  categoryId  Int?
+  category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  isPublic    Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
-  @@map("role") // 映射到数据库中的枚举名称
+  @@map("bookmark")
+  @@index([userId])
+  @@index([categoryId])
+}
+
+model Tag {
+  id          Int          @id @default(autoincrement())
+  name        String
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  projectTags ProjectTag[]
+
+  @@map("tag")
+  @@unique([name, userId]) // 每个用户标签名唯一
+  @@index([userId])
+}
+
+model Project {
+  id          Int          @id @default(autoincrement())
+  name        String
+  repoUrl     String
+  description String?
+  language    String?
+  starCount   Int?
+  readme      String?
+  categoryId  Int?
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  isPublic    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  projectTags ProjectTag[]
+
+  @@map("project")
+  @@index([userId])
+  @@index([categoryId])
+}
+
+model ProjectTag {
+  projectId   Int
+  tagId       Int
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tag         Tag          @relation(fields: [tagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([projectId, tagId])
+  @@map("project_tag")
+  @@index([tagId])
+  @@index([projectId])
 }

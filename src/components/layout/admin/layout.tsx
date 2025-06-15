@@ -12,40 +12,68 @@ import {
 } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 import { UserProfileCard } from "@/components/user-profile";
 
-const adminMeuns = [
+const adminMenus = [
   {
-    key: 0,
-    icon: <Icon icon={"dashicons:dashboard"} width={16} />,
+    key: "dashboard",
+    icon: <Icon icon="dashicons:dashboard" width={16} />,
     label: "仪表盘",
+    path: "/admin/",
   },
   {
-    key: 1,
-    icon: <Icon icon={"dashicons:book-alt"} width={16} />,
+    key: "categories",
+    icon: <Icon icon="dashicons:category" width={16} />,
+    label: "分类",
+    path: "/admin/categories",
+  },
+  {
+    key: "tags",
+    icon: <Icon icon="dashicons:tag" width={16} />,
+    label: "标签",
+    path: "/admin/tags",
+  },
+  {
+    key: "bookmarks",
+    icon: <Icon icon="bi:bookmark-dash-fill" width={16} />,
     label: "书签",
+    path: "/admin/bookmarks",
   },
   {
-    key: 2,
+    key: "projects",
+    icon: <Icon icon="si:projects-fill" width={16} />,
     label: "项目",
-    icon: <Icon icon={"dashicons:index-card"} width={16} />,
+    path: "/admin/projects",
   },
   {
-    key: 3,
+    key: "users",
+    icon: <Icon icon="dashicons:admin-users" width={16} />,
     label: "用户",
-    icon: <Icon icon={"dashicons:admin-users"} width={16} />,
+    path: "/admin/users",
   },
 ];
 
-const adminMenuMap: Record<string, string> = {
-  "0": "/admin",
-  "1": "/admin/bookmarks",
-  "2": "/admin/projects",
-  "3": "/admin/users",
-};
+const Logo = ({
+  collapsed,
+  hiddenLogo,
+}: {
+  collapsed: boolean;
+  hiddenLogo: boolean;
+}) => (
+  <Link
+    href="/"
+    className="h-16 flex items-center justify-center text-lg font-semibold bg-slate-100"
+  >
+    <Image src="/logo.svg" alt="logo" width={32} height={32} />
+    {!hiddenLogo && !collapsed && (
+      <span className="ml-2 md:block text-orange-500">FavBookmarks</span>
+    )}
+  </Link>
+);
+
 export function AdminLayout({
   user,
   children,
@@ -56,33 +84,34 @@ export function AdminLayout({
   const [collapsed, setCollapsed] = useState(false);
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState("#1677ff");
-  const [menuKey, setMenuKey] = useState("0");
   const router = useRouter();
+  const pathname = usePathname();
+  const [menuKey, setMenuKey] = useState("dashboard");
+
+  useEffect(() => {
+    // 按 path 长度从长到短排序，确保精准匹配
+    const sortedMenus = [...adminMenus].sort((a, b) =>
+      b.path.localeCompare(a.path),
+    );
+    const matched = sortedMenus.find((item) => pathname.startsWith(item.path));
+    if (matched) setMenuKey(matched.key);
+  }, [pathname]);
+
   const renderMenu = (collapsed: boolean, hiddenLogo: boolean) => (
     <>
       <div className="h-full flex flex-col">
-        <Link
-          href="/"
-          className="h-16 flex items-center justify-center text-lg font-semibold bg-slate-100"
-        >
-          <Image src="/logo.svg" alt="logo" width={32} height={32} />
-          {(!hiddenLogo || !collapsed) && (
-            <span className="ml-2 md:block text-orange-500">FavBookmarks</span>
-          )}
-        </Link>
+        <Logo collapsed={collapsed} hiddenLogo={hiddenLogo} />
 
         <Menu
           mode="inline"
           selectedKeys={[menuKey]}
-          items={adminMeuns}
+          items={adminMenus}
           className="border-none"
-          onClick={({ key }: { key: string }) => {
+          onClick={({ key }) => {
             setMenuKey(key);
             setOpen(false);
-            const href = adminMenuMap[key];
-            if (href) {
-              router.push(href);
-            }
+            const target = adminMenus.find((item) => item.key === key);
+            if (target?.path) router.push(target.path);
           }}
         />
       </div>
@@ -166,7 +195,7 @@ export function AdminLayout({
             </div>
           </Layout.Header>
 
-          <Layout.Content className="m-6 p-6 overflow-auto rounded shadow h-[calc(100vh-64px)]">
+          <Layout.Content className="m-4 overflow-auto rounded shadow h-[calc(100vh-64px)] bg-white">
             {children}
           </Layout.Content>
         </Layout>

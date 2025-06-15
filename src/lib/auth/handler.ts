@@ -1,7 +1,7 @@
 import { Account } from "next-auth";
 
-import { oauthService } from "@/service/oauth";
-import { userService } from "@/service/user";
+import { oauthService } from "@/services/oauth";
+import { userService } from "@/services/user";
 
 export type OAuthProfile = {
   id: string | number;
@@ -55,9 +55,11 @@ export async function handleOAuthLogin({
   if (!user) {
     const randomSuffix = Math.floor(Math.random() * 1000);
     const name = `${profile.login}_user${randomSuffix}`;
+    const randomPassword = Math.random().toString(36).slice(-8);
     user = await userService.createUser({
       email: email || "",
       name,
+      password: randomPassword,
       phone: phone || "",
       avatar: profile.avatar_url,
     });

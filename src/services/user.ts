@@ -1,7 +1,7 @@
-import { Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import prisma from "@/lib/prisma";
+import { Role } from "@/types/user";
 
 export const userService = {
   async findUserByUniqueKey(key: string) {
@@ -24,15 +24,12 @@ export const userService = {
     email: string;
     name: string;
     phone?: string;
-    password?: string;
+    password: string;
     role?: Role;
     avatar?: string;
   }) {
     const { email, name, phone, password, role, avatar } = data;
-    // 生成随机密码，因为 OAuth 用户不需要密码登录
-    const randomPassword = Math.random().toString(36).slice(-8);
-    const pwd = password || randomPassword;
-    const hashedPassword = await bcrypt.hash(pwd, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     return await prisma.user.create({
       data: {

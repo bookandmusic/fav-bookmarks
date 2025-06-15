@@ -18,7 +18,6 @@ export default async function Home() {
                 <Image
                   width={260}
                   height={260}
-                  className="object-cover"
                   alt={item.title}
                   src={item.cover}
                 />

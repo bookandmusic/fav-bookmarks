@@ -1,6 +1,6 @@
 // prisma/seed.ts
-import { userService } from "@/service/user";
-import { Role } from "@prisma/client";
+import { userService } from "@/services/user";
+import { Role } from "@/types/user";
 
 export async function main() {
   try {
@@ -8,7 +8,7 @@ export async function main() {
     const user = await userService.findUserByUniqueKey("admin");
     if (!user) {
       await userService.createUser({
-        email: "admin",
+        email: "admin@example.com",
         name: "admin",
         password: "123456",
         role: Role.ADMIN,

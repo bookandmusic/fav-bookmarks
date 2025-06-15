@@ -1,7 +1,7 @@
-export default function Bookmarks() {
+export default function BookMarks() {
   return (
     <div>
-      <h1>Bookmarks</h1>
+      <h1>BookMarks</h1>
     </div>
   );
 }

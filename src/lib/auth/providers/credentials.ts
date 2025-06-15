@@ -1,7 +1,7 @@
 import { User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import { userService } from "@/service/user";
+import { userService } from "@/services/user";
 
 export const credentialsProvider = CredentialsProvider({
   name: "credentials",

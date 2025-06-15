@@ -1,36 +1,75 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
-import prisma from "@/lib/prisma";
-import { CategoryList } from "@/types/menu";
+import { authenticateRequest } from "@/lib/auth/authMiddleware";
+import { createErrorResponse } from "@/lib/httpHelper";
+import { logger } from "@/lib/logger";
+import { categoryService } from "@/services/category";
+import { CateType } from "@/types/category";
 
-// 构建树形结构的递归函数
-function buildCategoryTree(
-  categories: CategoryList,
-  parentId: number | null = null,
-): CategoryList {
-  return categories
-    .filter((category) => category.pid === parentId)
-    .map((category) => {
-      const children = buildCategoryTree(categories, category.id);
-      return {
-        ...category,
-        ...(children.length > 0 ? { children } : {}),
-      };
-    });
+const cateTypeEnum = z.enum(["Project", "BookMark"]);
+// 定义 POST 请求的校验 Schema
+const postSchema = z.object({
+  name: z.string().min(1),
+  pid: z.number().optional(),
+  icon: z.string().optional(),
+  isPublic: z.boolean().optional(),
+  type: cateTypeEnum,
+});
+
+// GET /api/category
+export async function GET(request: NextRequest) {
+  const userId = await authenticateRequest();
+  if (!userId) {
+    return createErrorResponse("用户未登录", 401);
+  }
+  const searchParams = Object.fromEntries(
+    request.nextUrl.searchParams.entries(),
+  );
+  const rawType = searchParams.type;
+  const parsedTypeResult = cateTypeEnum.safeParse(rawType);
+  const cateType = (
+    parsedTypeResult.success ? parsedTypeResult.data : "BookMark"
+  ) as CateType;
+  try {
+    const categories = await categoryService.findMany(userId, cateType, true);
+    return NextResponse.json(categories);
+  } catch (error) {
+    logger.error("查询分类失败", error);
+    return createErrorResponse("查询分类失败", 500);
+  }
 }
 
-export async function GET() {
+// POST /api/category
+export async function POST(request: NextRequest) {
+  const userId = await authenticateRequest();
+  if (!userId) {
+    return createErrorResponse("用户未登录", 401);
+  }
+
   try {
-    // 查询所有分类
-    const categories = await prisma.category.findMany({
-      orderBy: [{ pid: "asc" }, { id: "asc" }],
+    const body = await request.json();
+    logger.info("创建分类请求", { body });
+
+    const result = postSchema.safeParse(body);
+
+    if (!result.success) {
+      return createErrorResponse("参数校验失败", 400, result.error.issues);
+    }
+
+    const { name, pid, icon, isPublic, type } = result.data;
+    const newCategory = await categoryService.create({
+      name,
+      pid: pid || null,
+      icon: icon || null,
+      userId,
+      type,
+      isPublic: isPublic || false,
     });
 
-    // 构建树形结构
-    const treeData = buildCategoryTree(categories);
-
-    return NextResponse.json(treeData);
-  } catch {
-    return NextResponse.json({ error: "查询分类失败" }, { status: 500 });
+    return NextResponse.json(newCategory, { status: 201 });
+  } catch (error) {
+    logger.error("创建分类失败", error);
+    return createErrorResponse("创建分类失败", 500);
   }
 }

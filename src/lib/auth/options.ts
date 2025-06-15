@@ -1,8 +1,8 @@
-import { NextAuthOptions, User } from "next-auth";
+import { NextAuthOptions, Session, User } from "next-auth";
 import { JWT } from "next-auth/jwt";
 
 import { credentialsProvider } from "@/lib/auth/providers/credentials";
-import { userService } from "@/service/user";
+import { userService } from "@/services/user";
 
 import { handleOAuthLogin, OAuthProfile } from "./handler";
 import { giteeProvider } from "./providers/gitee";
@@ -47,6 +47,16 @@ export const authOptions: NextAuthOptions = {
         token.name = existUser?.username;
       }
       return token;
+    },
+    async session({ session, token }: { session: Session; token: JWT }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string | undefined;
+        session.user.avatar = token.avatar as string | undefined;
+        session.user.phone = token.phone as string | undefined;
+        session.user.name = token.name as string | "";
+      }
+      return session;
     },
     async signIn({ account, profile }) {
       if (account && profile) {
