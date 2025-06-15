@@ -10,7 +10,7 @@ export default withAuth({
 
       // 如果是公开路径，放行
       const isPublic = publicPaths.some(
-        (path) => pathname === path || pathname.startsWith(path + "/")
+        (path) => pathname === path || pathname.startsWith(path + "/"),
       );
       if (isPublic) return true;
 

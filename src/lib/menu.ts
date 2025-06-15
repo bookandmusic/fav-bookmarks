@@ -20,18 +20,18 @@ export const headerMenuItems = [
     key: "0",
     title: "首页",
     href: "/",
-    icon: "typcn:home-outline",
+    icon: "fluent-color:home-16",
   },
   {
     key: "1",
     title: "收藏夹",
     href: "/bookmarks",
-    icon: "typcn:home-outline",
+    icon: "fluent-color:bookmark-20",
   },
   {
     key: "2",
     title: "项目集",
     href: "/projects",
-    icon: "si:projects-fill",
+    icon: "material-icon-theme:folder-project",
   },
 ];

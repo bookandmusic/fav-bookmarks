@@ -1,4 +1,5 @@
 import { LoginCard } from "@/components/form";
+import { BaseLayout } from "@/components/layout/base";
 export default async function Login({
   searchParams,
 }: {
@@ -9,14 +10,9 @@ export default async function Login({
   const error = params.error;
   return (
     <>
-      <div
-        className="w-full h-full min-h-screen flex items-center justify-center"
-        style={{
-          backgroundImage: "url(/bg.jpg)",
-        }}
-      >
+      <BaseLayout>
         <LoginCard error={error} />
-      </div>
+      </BaseLayout>
     </>
   );
 }

@@ -1,67 +1,52 @@
 "use client";
 import { Icon } from "@iconify/react";
+import { User } from "@prisma/client";
 import {
   Avatar,
-  Button,
   ColorPicker,
   ConfigProvider,
   Drawer,
   Layout,
+  Menu,
   Popover,
 } from "antd";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User } from "next-auth";
-import { signOut } from "next-auth/react";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 
-import { useCategory } from "@/hooks/useCategory";
-import { useLayoutContext } from "@/hooks/useLayoutContext";
-import { useErrorNotification } from "@/hooks/useNotification";
+import { UserProfileCard } from "@/components/user-profile";
 
-import { CategoryMenu, toMenuItems } from "../menu";
+const adminMeuns = [
+  {
+    key: 0,
+    icon: <Icon icon={"dashicons:dashboard"} width={16} />,
+    label: "仪表盘",
+  },
+  {
+    key: 1,
+    icon: <Icon icon={"dashicons:book-alt"} width={16} />,
+    label: "书签",
+  },
+  {
+    key: 2,
+    label: "项目",
+    icon: <Icon icon={"dashicons:index-card"} width={16} />,
+  },
+  {
+    key: 3,
+    label: "用户",
+    icon: <Icon icon={"dashicons:admin-users"} width={16} />,
+  },
+];
 
-// UserInfoItem 组件
-const UserInfoItem = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex justify-between">
-    <dt className="text-gray-500 font-medium">{label}</dt>
-    <dd className="text-right">{value}</dd>
-  </div>
-);
-
-const UserProfile = ({ user }: { user: User }) => {
-  const router = useRouter();
-
-  const handleLogout = (e: React.MouseEvent) => {
-    e.stopPropagation(); // 阻止事件冒泡
-    signOut({ redirect: true, callbackUrl: "/login" });
-  };
-  const handleAdmin = (e: React.MouseEvent) => {
-    e.stopPropagation(); // 阻止事件冒泡
-    router.push("/admin");
-  };
-  return (
-    <div className="p-4">
-      <dl className="space-y-2">
-        <UserInfoItem label="名字:" value={user.name} />
-        <UserInfoItem label="身份:" value={user.role || "User"} />
-        <UserInfoItem label="邮箱:" value={user.email} />
-      </dl>
-      <div className="flex gap-3 mt-4 pt-4 border-t border-gray-200">
-        <Button icon={<Icon icon="mynaui:logout" />} onClick={handleLogout}>
-          退出
-        </Button>
-        <Button
-          icon={<Icon icon="weui:setting-outlined" />}
-          onClick={handleAdmin}
-        >
-          后台
-        </Button>
-      </div>
-    </div>
-  );
+const adminMenuMap: Record<string, string> = {
+  "0": "/admin",
+  "1": "/admin/bookmarks",
+  "2": "/admin/projects",
+  "3": "/admin/users",
 };
-
-export function InnerLayout({
+export function AdminLayout({
   user,
   children,
 }: {
@@ -70,24 +55,38 @@ export function InnerLayout({
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [open, setOpen] = useState(false);
-  const { primary, setPrimary, menuKey, setMenuKey } = useLayoutContext();
-  const { categoryList, error } = useCategory();
-  const contextHolder = useErrorNotification(error);
-
-  const menuItems = useMemo(() => toMenuItems(categoryList), [categoryList]);
-
+  const [primary, setPrimary] = useState("#1677ff");
+  const [menuKey, setMenuKey] = useState("0");
+  const router = useRouter();
   const renderMenu = (collapsed: boolean, hiddenLogo: boolean) => (
-    <CategoryMenu
-      menuItems={menuItems}
-      collapsed={collapsed}
-      hiddenLogo={hiddenLogo}
-      menuKey={menuKey}
-      primary={primary}
-      onClick={({ key }: { key: string }) => {
-        setMenuKey(key);
-        setOpen(false);
-      }}
-    />
+    <>
+      <div className="h-full flex flex-col">
+        <Link
+          href="/"
+          className="h-16 flex items-center justify-center text-lg font-semibold bg-slate-100"
+        >
+          <Image src="/logo.svg" alt="logo" width={32} height={32} />
+          {(!hiddenLogo || !collapsed) && (
+            <span className="ml-2 md:block text-orange-500">FavBookmarks</span>
+          )}
+        </Link>
+
+        <Menu
+          mode="inline"
+          selectedKeys={[menuKey]}
+          items={adminMeuns}
+          className="border-none"
+          onClick={({ key }: { key: string }) => {
+            setMenuKey(key);
+            setOpen(false);
+            const href = adminMenuMap[key];
+            if (href) {
+              router.push(href);
+            }
+          }}
+        />
+      </div>
+    </>
   );
 
   return (
@@ -105,7 +104,6 @@ export function InnerLayout({
         },
       }}
     >
-      {contextHolder}
       <Layout className="h-screen w-full">
         {/* 移动端抽屉菜单 */}
         <Drawer
@@ -157,7 +155,7 @@ export function InnerLayout({
                 onChange={(color) => setPrimary(color.toHexString())}
               />
               <Popover
-                content={<UserProfile user={user} />}
+                content={<UserProfileCard user={user} />}
                 placement="topRight"
               >
                 <Avatar
