@@ -8,11 +8,11 @@ export interface BookmarkCreate {
 }
 
 export interface BookmarkUpdate {
-  title?: string;
-  url?: string;
-  description?: string | null;
-  icon?: string | null;
-  categoryId?: number;
+  title: string;
+  url: string;
+  description: string | null;
+  icon: string | null;
+  categoryId: number | null;
 }
 
 export interface Bookmark {

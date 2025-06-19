@@ -7,11 +7,11 @@ import { bookmarkService } from "@/services/bookmark";
 
 // 定义 PUT 请求的校验 Schema
 const putSchema = z.object({
-  title: z.string().min(1).optional(),
-  url: z.string().url().optional(),
-  categoryId: z.number().int().optional(),
-  description: z.string().nullable().optional(),
-  icon: z.string().nullable().optional(),
+  title: z.string().min(1),
+  url: z.string().url(),
+  categoryId: z.number().int().nullable(),
+  description: z.string().nullable(),
+  icon: z.string().nullable(),
 });
 
 // 辅助函数：生成错误响应
@@ -19,18 +19,19 @@ const putSchema = z.object({
 // PUT /api/bookmark/[id]
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
-  const id = Number(params.id);
+  const { id } = await context.params;
+  const bookmarkId = Number(id);
 
   // 校验 id 是否合法
-  if (!Number.isInteger(id) || id <= 0) {
+  if (!Number.isInteger(bookmarkId) || bookmarkId <= 0) {
     return createErrorResponse("无效的书签 ID", 400);
   }
 
   try {
     const body = await request.json();
-    logger.info(`更新书签请求 (ID: ${id})`, { body });
+    logger.info(`更新书签请求 (ID: ${bookmarkId})`, { body });
 
     const result = putSchema.safeParse(body);
 
@@ -38,10 +39,10 @@ export async function PUT(
       return createErrorResponse("参数校验失败", 400, result.error.issues);
     }
 
-    const updated = await bookmarkService.update(id, result.data);
+    const updated = await bookmarkService.update(bookmarkId, result.data);
     return NextResponse.json(updated);
   } catch (err) {
-    logger.error(`更新书签失败 (ID: ${id})`, err);
+    logger.error(`更新书签失败 (ID: ${bookmarkId})`, err);
     return createErrorResponse("更新书签失败", 500);
   }
 }
@@ -49,17 +50,18 @@ export async function PUT(
 // DELETE /api/bookmark/[id]
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
-  const id = Number(params.id);
+  const { id } = await context.params;
+  const bookmarkId = Number(id);
 
   // 校验 id 是否合法
-  if (!Number.isInteger(id) || id <= 0) {
+  if (!Number.isInteger(bookmarkId) || bookmarkId <= 0) {
     return createErrorResponse("无效的书签 ID", 400);
   }
 
   try {
-    const deleted = await bookmarkService.delete(id);
+    const deleted = await bookmarkService.delete(bookmarkId);
 
     if (!deleted) {
       return createErrorResponse("书签不存在或已被删除", 404);
@@ -67,7 +69,7 @@ export async function DELETE(
 
     return NextResponse.json(deleted);
   } catch (err) {
-    logger.error(`删除书签失败 (ID: ${id})`, err);
+    logger.error(`删除书签失败 (ID: ${bookmarkId})`, err);
     return createErrorResponse("删除书签失败", 500);
   }
 }

@@ -11,9 +11,9 @@ const cateTypeEnum = z.enum(["Project", "BookMark"]);
 // 定义 POST 请求的校验 Schema
 const postSchema = z.object({
   name: z.string().min(1),
-  pid: z.number().optional(),
-  icon: z.string().optional(),
-  isPublic: z.boolean().optional(),
+  pid: z.number().nullable(),
+  icon: z.string().nullable(),
+  isPublic: z.boolean(),
   type: cateTypeEnum,
 });
 
@@ -56,15 +56,9 @@ export async function POST(request: NextRequest) {
     if (!result.success) {
       return createErrorResponse("参数校验失败", 400, result.error.issues);
     }
-
-    const { name, pid, icon, isPublic, type } = result.data;
     const newCategory = await categoryService.create({
-      name,
-      pid: pid || null,
-      icon: icon || null,
-      userId,
-      type,
-      isPublic: isPublic || false,
+      ...result.data,
+      userId: userId,
     });
 
     return NextResponse.json(newCategory, { status: 201 });

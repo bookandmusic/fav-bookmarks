@@ -1,8 +1,12 @@
+"use client";
 import { Icon } from "@iconify/react";
 import { notification } from "antd";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export function useErrorNotification(error: Error | null) {
+export function useNotification() {
+  const [error, setError] = useState<Error | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+  const [warn, setWarn] = useState<string | null>(null);
   const [api, contextHolder] = notification.useNotification();
 
   useEffect(() => {
@@ -10,10 +14,32 @@ export function useErrorNotification(error: Error | null) {
       api.error({
         message: error.message,
         placement: "topRight",
-        icon: <Icon icon={"akar-icons:chat-error"} color="red" />,
+        icon: <Icon icon={"ix:error"} color="red" />,
       });
+      setError(null);
     }
-  }, [error, api]);
+    if (info) {
+      api.info({
+        message: info,
+        placement: "topRight",
+        icon: <Icon icon={"grommet-icons:info"} color="blue" />,
+      });
+      setInfo(null);
+    }
+    if (warn) {
+      api.warning({
+        message: warn,
+        placement: "topRight",
+        icon: <Icon icon={"material-symbols:warning-outline"} color="orange" />,
+      });
+      setWarn(null);
+    }
+  }, [error, info, warn, api]);
 
-  return contextHolder;
+  return {
+    contextHolder,
+    setError,
+    setInfo,
+    setWarn,
+  };
 }

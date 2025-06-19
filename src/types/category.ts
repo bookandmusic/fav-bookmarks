@@ -5,20 +5,16 @@ export const CateType = {
 
 export type CateType = "Project" | "BookMark";
 
-export interface CategoryCreate {
+export interface CategoryFormValue {
   name: string;
   icon: string | null;
   isPublic: boolean;
-  userId: number;
   type: CateType;
   pid: number | null;
 }
 
-export interface CategoryUpdate {
-  name: string | undefined;
-  icon: string | undefined | null;
-  isPublic: boolean | undefined;
-  pid: number | undefined | null;
+export interface CategoryCreate extends CategoryFormValue {
+  userId: number;
 }
 
 export interface Category {
@@ -26,10 +22,12 @@ export interface Category {
   name: string;
   icon: string | null;
   pid: number | null;
+  isPublic: boolean;
+  type: CateType;
 }
 
 export interface CategoryNode extends Category {
-  title: string;
-  key: string;
+  label: string;
+  value: number;
   children: CategoryNode[];
 }
