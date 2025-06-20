@@ -31,7 +31,6 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    logger.info(`更新书签请求 (ID: ${bookmarkId})`, { body });
 
     const result = putSchema.safeParse(body);
 

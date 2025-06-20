@@ -49,7 +49,6 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    logger.info("创建分类请求", { body });
 
     const result = postSchema.safeParse(body);
 

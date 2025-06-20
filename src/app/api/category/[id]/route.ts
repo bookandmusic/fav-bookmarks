@@ -33,7 +33,6 @@ export async function PUT(
 
   try {
     const body = await request.json();
-    logger.info(`更新分类请求 (ID: ${categoryId})`, { body });
 
     const result = putSchema.safeParse(body);
 
