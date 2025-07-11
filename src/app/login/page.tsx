@@ -1,5 +1,5 @@
-import { LoginCard } from "@/components/form";
 import { BaseLayout } from "@/components/layout/base";
+import { LoginCard } from "@/components/user/login-card";
 export default async function Login({
   searchParams,
 }: {

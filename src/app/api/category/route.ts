@@ -5,34 +5,37 @@ import { authenticateRequest } from "@/lib/auth/authMiddleware";
 import { createErrorResponse } from "@/lib/httpHelper";
 import { logger } from "@/lib/logger";
 import { categoryService } from "@/services/category";
-import { CateType } from "@/types/category";
 
 const cateTypeEnum = z.enum(["Project", "BookMark"]);
-// 定义 POST 请求的校验 Schema
-const postSchema = z.object({
-  name: z.string().min(1),
-  pid: z.number().nullable(),
-  icon: z.string().nullable(),
-  isPublic: z.boolean(),
-  type: cateTypeEnum,
-});
 
 // GET /api/category
+const querySchema = z.object({
+  type: cateTypeEnum.optional().default("BookMark"),
+  isPublic: z
+    .string()
+    .optional()
+    .transform((val) => val === "true"),
+});
 export async function GET(request: NextRequest) {
   const userId = await authenticateRequest();
   if (!userId) {
     return createErrorResponse("用户未登录", 401);
   }
-  const searchParams = Object.fromEntries(
-    request.nextUrl.searchParams.entries(),
-  );
-  const rawType = searchParams.type;
-  const parsedTypeResult = cateTypeEnum.safeParse(rawType);
-  const cateType = (
-    parsedTypeResult.success ? parsedTypeResult.data : "BookMark"
-  ) as CateType;
+
+  const searchParams = Object.fromEntries(request.nextUrl.searchParams);
+  const result = querySchema.safeParse(searchParams);
+
+  if (!result.success) {
+    return createErrorResponse("查询参数无效", 400);
+  }
+
+  const { type: cateType, isPublic } = result.data;
   try {
-    const categories = await categoryService.findMany(userId, cateType, true);
+    const categories = await categoryService.findMany(
+      userId,
+      cateType,
+      isPublic,
+    );
     return NextResponse.json(categories);
   } catch (error) {
     logger.error("查询分类失败", error);
@@ -41,6 +44,13 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/category
+const postSchema = z.object({
+  name: z.string().min(1),
+  pid: z.number().nullable(),
+  icon: z.string().nullable(),
+  isPublic: z.boolean(),
+  type: cateTypeEnum,
+});
 export async function POST(request: NextRequest) {
   const userId = await authenticateRequest();
   if (!userId) {

@@ -1,7 +1,7 @@
 import { BookMark } from "@prisma/client";
 
 import prisma from "@/lib/prisma";
-import { BookmarkCreate, BookmarkUpdate } from "@/types/bookmark";
+import { BookmarkCreate, BookmarkFormValue } from "@/types/bookmark";
 
 export const bookmarkService = {
   // 分页获取书签
@@ -70,7 +70,10 @@ export const bookmarkService = {
   },
 
   // 更新书签
-  async update(id: number, data: Partial<BookmarkUpdate>): Promise<BookMark> {
+  async update(
+    id: number,
+    data: Partial<BookmarkFormValue>,
+  ): Promise<BookMark> {
     const updateData = Object.fromEntries(
       Object.entries(data).filter(([_, value]) => value !== undefined),
     );

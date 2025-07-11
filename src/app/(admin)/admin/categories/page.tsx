@@ -10,10 +10,11 @@ import {
 } from "@/client/categoryClient";
 import {
   BreadcrumbNav,
-  CategoryForm,
+  CategoryEditDrawer,
   CategoryList,
   CategoryTabs,
-} from "@/components/admin-category";
+} from "@/components/category/index";
+import { FullScreenOverlay } from "@/components/loading";
 import { useCategory } from "@/hooks/useCategory";
 import { useNotification } from "@/hooks/useNotification";
 import { Category, CategoryFormValue } from "@/types/category";
@@ -37,6 +38,7 @@ export default function Categories() {
 
   const [open, setOpen] = useState(false);
   const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const editeCategory = (item: Category) => {
     setCurrentCategory(item);
@@ -46,6 +48,7 @@ export default function Categories() {
   const editeSubmit = (id: number, values: CategoryFormValue) => {
     updateCategory(id, values)
       .then(() => {
+        setIsLoading(false);
         setInfo(`修改${values.name}成功`);
         setOpen(false);
         setReload(!reload);
@@ -62,6 +65,7 @@ export default function Categories() {
   const addSubmit = (values: CategoryFormValue) => {
     createCategory(values)
       .then(() => {
+        setIsLoading(false);
         setInfo(`创建${values.name}成功`);
         setOpen(false);
         setReload(!reload);
@@ -71,20 +75,24 @@ export default function Categories() {
       });
   };
   const delCategory = (item: Category) => {
+    setIsLoading(true);
     deleteCategory(item.id)
       .then(() => {
+        setIsLoading(false);
         setInfo(`删除${item.name}成功`);
         setReload(!reload);
       })
       .catch((error) => {
+        setIsLoading(false);
         setError(error);
       });
   };
 
   return (
-    <div className="flex flex gap-4 h-full">
+    <div className="flex flex-col lg:flex-row gap-4 h-full">
       {contextHolder}
-      <div className="flex flex-col gap-4 h-full w-full max-w-[900px] p-6">
+      {isLoading && <FullScreenOverlay />}
+      <div className="flex flex-col gap-4 h-full w-full lg:w-[900px] p-6">
         <CategoryTabs
           onTabSwitch={cateTypeChange}
           onAddCategory={onAddCategory}
@@ -107,15 +115,23 @@ export default function Categories() {
           onChange={setPage}
         />
       </div>
-      <div className="hidden xl:flex w-full h-full items-center justify-center">
-        <Icon width={300} height={300} icon="material-icon-theme:folder-core" />
+      <div className="hidden lg:flex flex-1 w-full h-full items-center justify-center">
+        <div className="w-1/2 max-w-[200px]">
+          <Icon
+            width={200}
+            height={200}
+            icon="material-icon-theme:folder-core"
+            className="w-full h-auto"
+          />
+        </div>
       </div>
-      <CategoryForm
+      <CategoryEditDrawer
         initialValues={currentCategory}
         open={open}
         setOpen={setOpen}
         categoryList={categoryList}
         onFinish={(values) => {
+          setIsLoading(true);
           if (currentCategory) {
             editeSubmit(currentCategory.id, values);
           } else {

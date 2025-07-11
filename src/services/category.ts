@@ -53,7 +53,7 @@ export const categoryService = {
       // 如果有 userId，则只查询该用户的数据
       return await prisma.category.findMany({
         where: { userId, type },
-        orderBy: [{ pid: "asc" }, { id: "asc" }],
+        orderBy: [{ id: "desc" }],
       });
     }
 
@@ -61,7 +61,7 @@ export const categoryService = {
       // 没有 userId 但有 isPublic，则只查询公开的
       return await prisma.category.findMany({
         where: { isPublic: true, type },
-        orderBy: [{ pid: "asc" }, { id: "asc" }],
+        orderBy: [{ id: "desc" }],
       });
     }
 

@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { Footer } from "@/components/layout/frontend/footer";
 import { Header } from "@/components/layout/frontend/header";
-import { UserProfileCard } from "@/components/user-profile";
+import { UserProfileCard } from "@/components/user/user-profile";
 import { authOptions } from "@/lib/auth/options";
 import { userService } from "@/services/user";
 

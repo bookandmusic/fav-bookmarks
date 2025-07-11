@@ -13,6 +13,14 @@ export interface CategoryFormValue {
   pid: number | null;
 }
 
+export type CategoryFormFields = {
+  name: string;
+  pid?: number[];
+  icon?: string;
+  isPublic: boolean;
+  type: CateType;
+};
+
 export interface CategoryCreate extends CategoryFormValue {
   userId: number;
 }

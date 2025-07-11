@@ -11,7 +11,7 @@ export const FullScreenOverlay: React.FC<FullScreenOverlayProps> = ({
   color = "text-indigo-600",
 }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/80">
       <Icon
         icon={icon}
         className={`${color} animate-spin`}
