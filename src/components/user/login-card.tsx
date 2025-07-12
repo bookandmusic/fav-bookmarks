@@ -1,20 +1,21 @@
-"use client";
-import "@ant-design/v5-patch-for-react-19";
+'use client';
+import { FC, PropsWithChildren, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
-import { Icon } from "@iconify/react";
-import { Button, Card, Flex, Form, FormInstance, Input } from "antd";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
-import { FC, PropsWithChildren, useEffect, useState } from "react";
+import { Icon } from '@iconify/react';
+import { Button, Card, Flex, Form, FormInstance, Input } from 'antd';
 
-import { FullScreenOverlay } from "@/components/loading";
+import { FullScreenOverlay } from '@/components/loading';
 
-interface SubmitButtonProps {
+import '@ant-design/v5-patch-for-react-19';
+
+interface SubmitButtonProperties {
   form: FormInstance;
   onClick?: () => void;
 }
 
-export const SubmitButton: FC<PropsWithChildren<SubmitButtonProps>> = ({
+export const SubmitButton: FC<PropsWithChildren<SubmitButtonProperties>> = ({
   form,
   children,
   onClick,
@@ -46,49 +47,49 @@ export const SubmitButton: FC<PropsWithChildren<SubmitButtonProps>> = ({
 export function LoginCard({ error: initialError }: { error?: string }) {
   const [isLoading, setIsLoading] = useState(false);
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const router = useRouter();
 
   useEffect(() => {
     if (initialError) {
-      setError("第三方登录失败，请稍后再试");
+      setError('第三方登录失败，请稍后再试');
     }
   }, [router, initialError]);
 
   const handleGitHubLogin = async () => {
     setIsLoading(true);
-    setError("");
-    await signIn("github", { callbackUrl: "/" });
+    setError('');
+    await signIn('github', { callbackUrl: '/' });
   };
   const handleGiteeLogin = async () => {
     setIsLoading(true);
-    setError("");
-    await signIn("gitee", { callbackUrl: "/" });
+    setError('');
+    await signIn('gitee', { callbackUrl: '/' });
   };
   // form
   const [form] = Form.useForm();
   const onReset = () => {
-    setError("");
+    setError('');
     form.resetFields();
   };
   const handleEmailLogin = async () => {
-    setError("");
+    setError('');
     setIsLoading(true);
     const values = form.getFieldsValue();
     try {
-      const res = await signIn("credentials", {
+      const response = await signIn('credentials', {
         ...values,
         redirect: false,
       });
 
-      if (res?.error) {
-        setError(res.error);
+      if (response?.error) {
+        setError(response.error);
         setIsLoading(false);
       } else {
-        router.push("/");
+        router.push('/');
       }
     } catch {
-      setError("登录失败");
+      setError('登录失败');
       setIsLoading(false);
     }
   };
@@ -98,28 +99,28 @@ export function LoginCard({ error: initialError }: { error?: string }) {
       <Card
         style={{ width: 300 }}
         actions={[
-          <Button key={"gitee"} type="text" onClick={handleGiteeLogin}>
-            <Icon icon={"simple-icons:gitee"}></Icon>
+          <Button key={'gitee'} type="text" onClick={handleGiteeLogin}>
+            <Icon icon={'simple-icons:gitee'}></Icon>
           </Button>,
-          <Button key={"github"} type="text" onClick={handleGitHubLogin}>
-            <Icon icon={"simple-icons:github"}></Icon>
+          <Button key={'github'} type="text" onClick={handleGitHubLogin}>
+            <Icon icon={'simple-icons:github'}></Icon>
           </Button>,
         ]}
-        title={"登录"}
+        title={'登录'}
       >
         {error && <div className="text-red-500 mb-4">{error}</div>}
         {isLoading && <FullScreenOverlay />}
 
         <Form form={form} style={{ maxWidth: 600 }}>
-          <Form.Item name={"name"} rules={[{ required: true }]}>
+          <Form.Item name={'name'} rules={[{ required: true }]}>
             <Input
-              prefix={<Icon icon={"mdi:account-outline"} />}
+              prefix={<Icon icon={'mdi:account-outline'} />}
               placeholder="输入用户名"
             />
           </Form.Item>
-          <Form.Item name={"password"} rules={[{ required: true }]}>
+          <Form.Item name={'password'} rules={[{ required: true }]}>
             <Input
-              prefix={<Icon icon={"mdi:lock-outline"} />}
+              prefix={<Icon icon={'mdi:lock-outline'} />}
               type="password"
               placeholder="输入密码"
             />

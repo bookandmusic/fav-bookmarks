@@ -1,23 +1,25 @@
-"use client";
-import { Icon } from "@iconify/react";
-import { Pagination } from "antd";
-import { useState } from "react";
+'use client';
+import { useState } from 'react';
+
+import { Icon } from '@iconify/react';
+import { Pagination } from 'antd';
 
 import {
   createCategory,
   deleteCategory,
   updateCategory,
-} from "@/client/categoryClient";
+} from '@/client/category-client';
 import {
   BreadcrumbNav,
   CategoryEditDrawer,
   CategoryList,
   CategoryTabs,
-} from "@/components/category/index";
-import { FullScreenOverlay } from "@/components/loading";
-import { useCategory } from "@/hooks/useCategory";
-import { useNotification } from "@/hooks/useNotification";
-import { Category, CategoryFormValue } from "@/types/category";
+} from '@/components/category/index';
+import { FullScreenOverlay } from '@/components/loading';
+import { useCategory } from '@/hooks/use-category';
+import { useNotification } from '@/hooks/use-notification';
+import { asyncWrapper } from '@/lib/utilities';
+import { Category, CategoryFormValue } from '@/types/category';
 
 export default function Categories() {
   const { setError, setInfo, contextHolder } = useNotification();
@@ -37,7 +39,9 @@ export default function Categories() {
   } = useCategory(setError);
 
   const [open, setOpen] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState<Category | null>(null);
+  const [currentCategory, setCurrentCategory] = useState<
+    Category | undefined
+  >();
   const [isLoading, setIsLoading] = useState(false);
 
   const editeCategory = (item: Category) => {
@@ -46,46 +50,47 @@ export default function Categories() {
   };
 
   const editeSubmit = (id: number, values: CategoryFormValue) => {
-    updateCategory(id, values)
-      .then(() => {
+    setIsLoading(true);
+    asyncWrapper(updateCategory(id, values), {
+      onSuccess: () => {
         setIsLoading(false);
-        setInfo(`修改${values.name}成功`);
+        setInfo(`分类：${values.name}，修改成功`);
         setOpen(false);
         setReload(!reload);
-      })
-      .catch((error) => {
-        setError(error);
-      });
+      },
+      onError: setError,
+      onFinally: () => setIsLoading(false),
+    });
   };
   const onAddCategory = () => {
-    setCurrentCategory(null);
+    setCurrentCategory(undefined);
     setOpen(true);
   };
 
   const addSubmit = (values: CategoryFormValue) => {
-    createCategory(values)
-      .then(() => {
+    setIsLoading(true);
+    asyncWrapper(createCategory(values), {
+      onSuccess: () => {
         setIsLoading(false);
-        setInfo(`创建${values.name}成功`);
+        setInfo(`分类：${values.name}，添加成功`);
         setOpen(false);
         setReload(!reload);
-      })
-      .catch((error) => {
-        setError(error);
-      });
+      },
+      onError: setError,
+      onFinally: () => setIsLoading(false),
+    });
   };
   const delCategory = (item: Category) => {
     setIsLoading(true);
-    deleteCategory(item.id)
-      .then(() => {
+    asyncWrapper(deleteCategory(item.id), {
+      onSuccess: () => {
         setIsLoading(false);
-        setInfo(`删除${item.name}成功`);
+        setInfo(`分类：${item.name}，删除成功`);
         setReload(!reload);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        setError(error);
-      });
+      },
+      onError: setError,
+      onFinally: () => setIsLoading(false),
+    });
   };
 
   return (
@@ -131,7 +136,6 @@ export default function Categories() {
         setOpen={setOpen}
         categoryList={categoryList}
         onFinish={(values) => {
-          setIsLoading(true);
           if (currentCategory) {
             editeSubmit(currentCategory.id, values);
           } else {

@@ -1,9 +1,9 @@
-import { Button, Form, Input, Radio } from "antd";
-import { useForm } from "antd/es/form/Form";
+import { Button, Form, Input, Radio } from 'antd';
+import { useForm } from 'antd/es/form/Form';
 
-import { CategoryCascader } from "@/components/category/index";
-import { BookmarkSearchFormValue } from "@/types/bookmark";
-import { Category } from "@/types/category";
+import { CategoryCascader } from '@/components/category/index';
+import { BookmarkSearchFormValue } from '@/types/bookmark';
+import { Category } from '@/types/category';
 
 type FieldType = {
   keyword?: string;
@@ -21,9 +21,9 @@ export const BookmarkSearchForm = ({
   const [form] = useForm();
   const handleFinish = (values: FieldType) => {
     const sanitizedValues = {
-      categoryId: values.categoryId?.at(-1) ?? null,
-      keyword: values.keyword ?? null,
-      isPublic: values.isPublic ?? null,
+      categoryId: values.categoryId?.at(-1),
+      keyword: values.keyword,
+      isPublic: values.isPublic,
     };
     onFinish?.(sanitizedValues);
   };

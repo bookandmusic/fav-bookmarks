@@ -1,8 +1,8 @@
 // src/app/error/page.tsx
 
-import { Button, Result } from "antd";
+import { Button, Result } from 'antd';
 
-import { BaseLayout } from "@/components/layout/base";
+import { BaseLayout } from '@/components/layout/base';
 
 export default function ErrorPage() {
   return (
@@ -20,7 +20,7 @@ export default function ErrorPage() {
             type="primary"
             href="/"
             style={{
-              color: "white",
+              color: 'white',
             }}
           >
             返回首页

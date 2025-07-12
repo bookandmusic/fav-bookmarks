@@ -1,17 +1,18 @@
-import { Icon } from "@iconify/react";
-import { Button, Form, Input, Modal, Radio, Switch } from "antd";
-import { useForm } from "antd/es/form/Form";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from 'react';
+
+import { Icon } from '@iconify/react';
+import { Button, Form, Input, Modal, Radio, Switch } from 'antd';
+import { useForm } from 'antd/es/form/Form';
 
 import {
   CategoryFormFields,
   CategoryFormValue,
   CateType,
-} from "@/types/category";
-import { Category } from "@/types/category";
+} from '@/types/category';
+import { Category } from '@/types/category';
 
-import { CategoryCascader } from "./CategoryCascader";
-import { getCategoryPath } from "./utils";
+import { CategoryCascader } from './category-cascader';
+import { getCategoryPath } from './utilities';
 
 export const CategoryEditForm = ({
   categoryList,
@@ -20,17 +21,16 @@ export const CategoryEditForm = ({
   onFinish,
 }: {
   categoryList: Category[];
-  initialValues: CategoryFormValue | null;
+  initialValues?: CategoryFormValue;
   resetForm: boolean;
   onFinish?: (values: CategoryFormValue) => void;
 }) => {
   const [form] = useForm();
-  const [buttonDisabled, setButtonDisabled] = useState(false);
   const [modal, contextHolder] = Modal.useModal();
 
   const { initValues, disableType } = useMemo(() => {
     if (initialValues) {
-      const pidPath = getCategoryPath(initialValues.pid, categoryList);
+      const pidPath = getCategoryPath(categoryList, initialValues.pid);
       return {
         initValues: {
           ...initialValues,
@@ -40,7 +40,6 @@ export const CategoryEditForm = ({
       };
     }
     return {
-      initValues: null,
       disableType: false,
     };
   }, [initialValues, categoryList]);
@@ -53,31 +52,22 @@ export const CategoryEditForm = ({
   const handleFinish = async (values: CategoryFormFields) => {
     const sanitizedValues = {
       ...values,
-      pid: values.pid?.at(-1) ?? null,
-      icon: values.icon ?? null,
+      pid: values.pid?.at(-1),
+      icon: values.icon,
     };
-    try {
-      await onFinish?.(sanitizedValues);
-    } finally {
-      setButtonDisabled(false);
-    }
+
+    await onFinish?.(sanitizedValues);
   };
 
   const showSaveConfirm = async () => {
-    try {
-      await form.validateFields();
-      const name = form.getFieldValue("name") || "未命名";
-      setButtonDisabled(true);
-      modal.confirm({
-        title: "确认保存",
-        icon: <Icon icon="lucide:save" width={20} color="#1677ff" />,
-        content: `确定要保存分类 "${name}" 吗？`,
-        onOk: () => form.submit(),
-        onCancel: () => setButtonDisabled(false),
-      });
-    } catch {
-      setButtonDisabled(false);
-    }
+    await form.validateFields();
+    const name = form.getFieldValue('name') || '未命名';
+    modal.confirm({
+      title: '确认保存',
+      icon: <Icon icon="lucide:save" width={24} color="#1677ff" />,
+      content: `确定要保存分类 "${name}" 吗？`,
+      onOk: () => form.submit(),
+    });
   };
 
   return (
@@ -85,7 +75,7 @@ export const CategoryEditForm = ({
       <Form.Item
         label="名称"
         name="name"
-        rules={[{ required: true, message: "请输入名称" }]}
+        rules={[{ required: true, message: '请输入名称' }]}
       >
         <Input />
       </Form.Item>
@@ -98,13 +88,13 @@ export const CategoryEditForm = ({
       <Form.Item
         label="类型"
         name="type"
-        rules={[{ required: true, message: "请选择类型" }]}
+        rules={[{ required: true, message: '请选择类型' }]}
       >
         <Radio.Group
           disabled={disableType}
           options={[
-            { label: "书签", value: CateType.BookMark },
-            { label: "项目", value: CateType.Project },
+            { label: '书签', value: CateType.BookMark },
+            { label: '项目', value: CateType.Project },
           ]}
         />
       </Form.Item>
@@ -114,11 +104,7 @@ export const CategoryEditForm = ({
       <Form.Item>
         <div className="flex justify-center gap-8">
           {contextHolder}
-          <Button
-            type="primary"
-            disabled={buttonDisabled}
-            onClick={showSaveConfirm}
-          >
+          <Button type="primary" onClick={showSaveConfirm}>
             保存
           </Button>
           <Button onClick={() => form.resetFields()}>重置</Button>

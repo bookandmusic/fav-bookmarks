@@ -1,14 +1,14 @@
-import { NextAuthOptions, Session, User } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import { NextAuthOptions, Session, User } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
 
-import { credentialsProvider } from "@/lib/auth/providers/credentials";
-import { userService } from "@/services/user";
+import { credentialsProvider } from '@/lib/auth/providers/credentials';
+import { userService } from '@/services/user';
 
-import { handleOAuthLogin, OAuthProfile } from "./handler";
-import { giteeProvider } from "./providers/gitee";
-import { githubAuthProvider } from "./providers/github";
+import { handleOAuthLogin, OAuthProfile } from './handler';
+import { giteeProvider } from './providers/gitee';
+import { githubAuthProvider } from './providers/github';
 
-declare module "next-auth" {
+declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
@@ -33,7 +33,7 @@ export const authOptions: NextAuthOptions = {
   providers: [credentialsProvider, githubAuthProvider, giteeProvider],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60,
   },
   callbacks: {
@@ -54,7 +54,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string | undefined;
         session.user.avatar = token.avatar as string | undefined;
         session.user.phone = token.phone as string | undefined;
-        session.user.name = token.name as string | "";
+        session.user.name = token.name as string | '';
       }
       return session;
     },
@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/login",
-    error: "/login",
+    signIn: '/login',
+    error: '/login',
   },
 };

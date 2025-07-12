@@ -4,7 +4,7 @@ export function BaseLayout({ children }: { children: React.ReactNode }) {
       <div
         className="w-full h-full min-h-screen flex items-center justify-center"
         style={{
-          backgroundImage: "url(/bg.jpg)",
+          backgroundImage: 'url(/bg.jpg)',
         }}
       >
         {children}

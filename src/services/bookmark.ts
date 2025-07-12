@@ -1,7 +1,7 @@
-import { BookMark } from "@prisma/client";
+import { BookMark } from '@prisma/client';
 
-import prisma from "@/lib/prisma";
-import { BookmarkCreate, BookmarkFormValue } from "@/types/bookmark";
+import prisma from '@/lib/prisma';
+import { BookmarkCreate, BookmarkFormValue } from '@/types/bookmark';
 
 export const bookmarkService = {
   // 分页获取书签
@@ -12,11 +12,11 @@ export const bookmarkService = {
     keyword,
     isPublic,
   }: {
-    categoryId: number | null;
     page: number;
     size: number;
-    keyword: string | undefined | null;
-    isPublic: boolean | undefined | null;
+    categoryId?: number;
+    keyword?: string;
+    isPublic?: boolean;
   }): Promise<{
     data: BookMark[];
     pagination: {
@@ -26,9 +26,14 @@ export const bookmarkService = {
       totalPages: number;
     };
   }> {
+    let isPublicCondition = {};
+    if (isPublic !== undefined) {
+      isPublicCondition = { isPublic: isPublic };
+    }
+
     const where = {
       ...(categoryId ? { categoryId } : {}),
-      ...(isPublic ? { isPublic: true } : {}),
+      ...isPublicCondition,
       ...(keyword
         ? {
             OR: [
@@ -42,7 +47,7 @@ export const bookmarkService = {
     const [bookmarks, total] = await Promise.all([
       prisma.bookMark.findMany({
         where,
-        orderBy: { id: "desc" },
+        orderBy: { id: 'desc' },
         skip: (page - 1) * size,
         take: size,
       }),
@@ -72,10 +77,10 @@ export const bookmarkService = {
   // 更新书签
   async update(
     id: number,
-    data: Partial<BookmarkFormValue>,
+    data: Partial<BookmarkFormValue>
   ): Promise<BookMark> {
     const updateData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== undefined),
+      Object.entries(data).filter(([, value]) => value !== undefined)
     );
 
     return prisma.bookMark.update({

@@ -1,12 +1,13 @@
-import { Cascader } from "antd";
-import { DefaultOptionType } from "antd/es/cascader";
-import { useMemo } from "react";
+import { useMemo } from 'react';
 
-import { Category, CategoryNode } from "@/types/category";
+import { Cascader } from 'antd';
+import { DefaultOptionType } from 'antd/es/cascader';
+
+import { Category, CategoryNode } from '@/types/category';
 
 const buildCategoryTree = (
   categories: Category[],
-  parentId: number | null = null,
+  parentId?: number
 ): CategoryNode[] =>
   categories
     .filter((item) => item.pid === parentId)
@@ -17,6 +18,10 @@ const buildCategoryTree = (
       ...item,
     }));
 
+const filter = (inputValue: string, path: DefaultOptionType[]) =>
+  path.some((option) =>
+    (option.label as string).toLowerCase().includes(inputValue.toLowerCase())
+  );
 export const CategoryCascader = ({
   categoryList,
   value,
@@ -28,17 +33,12 @@ export const CategoryCascader = ({
 }) => {
   const treeData = useMemo(
     () => buildCategoryTree(categoryList),
-    [categoryList],
+    [categoryList]
   );
-
-  const filter = (inputValue: string, path: DefaultOptionType[]) =>
-    path.some((option) =>
-      (option.label as string).toLowerCase().includes(inputValue.toLowerCase()),
-    );
 
   return (
     <Cascader
-      style={{ width: "100%" }}
+      style={{ width: '100%' }}
       value={value}
       showSearch={{ filter }}
       options={treeData}

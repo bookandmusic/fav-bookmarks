@@ -1,6 +1,11 @@
-"use client";
-import { Icon } from "@iconify/react";
-import { User } from "@prisma/client";
+'use client';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+
+import { Icon } from '@iconify/react';
+import { User } from '@prisma/client';
 import {
   Avatar,
   ColorPicker,
@@ -9,50 +14,46 @@ import {
   Layout,
   Menu,
   Popover,
-} from "antd";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+} from 'antd';
 
-import { UserProfileCard } from "@/components/user/user-profile";
+import { UserProfileCard } from '@/components/user/user-profile';
 
 const adminMenus = [
   {
-    key: "dashboard",
+    key: 'dashboard',
     icon: <Icon icon="dashicons:dashboard" width={16} />,
-    label: "仪表盘",
-    path: "/admin/",
+    label: '仪表盘',
+    path: '/admin/',
   },
   {
-    key: "categories",
+    key: 'categories',
     icon: <Icon icon="dashicons:category" width={16} />,
-    label: "分类",
-    path: "/admin/categories",
+    label: '分类',
+    path: '/admin/categories',
   },
   {
-    key: "tags",
+    key: 'tags',
     icon: <Icon icon="dashicons:tag" width={16} />,
-    label: "标签",
-    path: "/admin/tags",
+    label: '标签',
+    path: '/admin/tags',
   },
   {
-    key: "bookmarks",
+    key: 'bookmarks',
     icon: <Icon icon="bi:bookmark-dash-fill" width={16} />,
-    label: "书签",
-    path: "/admin/bookmarks",
+    label: '书签',
+    path: '/admin/bookmarks',
   },
   {
-    key: "projects",
+    key: 'projects',
     icon: <Icon icon="si:projects-fill" width={16} />,
-    label: "项目",
-    path: "/admin/projects",
+    label: '项目',
+    path: '/admin/projects',
   },
   {
-    key: "users",
+    key: 'users',
     icon: <Icon icon="dashicons:admin-users" width={16} />,
-    label: "用户",
-    path: "/admin/users",
+    label: '用户',
+    path: '/admin/users',
   },
 ];
 
@@ -83,15 +84,15 @@ export function AdminLayout({
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [open, setOpen] = useState(false);
-  const [primary, setPrimary] = useState("#1677ff");
+  const [primary, setPrimary] = useState('#1677ff');
   const router = useRouter();
   const pathname = usePathname();
-  const [menuKey, setMenuKey] = useState("dashboard");
+  const [menuKey, setMenuKey] = useState('dashboard');
 
   useEffect(() => {
     // 按 path 长度从长到短排序，确保精准匹配
     const sortedMenus = [...adminMenus].sort((a, b) =>
-      b.path.localeCompare(a.path),
+      b.path.localeCompare(a.path)
     );
     const matched = sortedMenus.find((item) => pathname.startsWith(item.path));
     if (matched) setMenuKey(matched.key);
@@ -123,12 +124,12 @@ export function AdminLayout({
       theme={{
         token: { colorPrimary: primary },
         components: {
-          Layout: { headerBg: "#fff", siderBg: "#fff" },
+          Layout: { headerBg: '#fff', siderBg: '#fff' },
           Menu: {
-            colorBgContainer: "#fff",
+            colorBgContainer: '#fff',
             itemSelectedBg: primary,
-            itemColor: "#000",
-            itemSelectedColor: "#000",
+            itemColor: '#000',
+            itemSelectedColor: '#000',
           },
         },
       }}
@@ -148,6 +149,7 @@ export function AdminLayout({
 
         {/* PC 端侧边栏菜单 */}
         <Layout.Sider
+          // eslint-disable-next-line unicorn/no-null
           trigger={null}
           collapsible
           collapsed={collapsed}
@@ -164,7 +166,7 @@ export function AdminLayout({
               onClick={() => setCollapsed(!collapsed)}
             >
               <Icon
-                icon={collapsed ? "gg:menu-left" : "gg:menu-right"}
+                icon={collapsed ? 'gg:menu-left' : 'gg:menu-right'}
                 width={24}
                 height={24}
               />

@@ -1,9 +1,10 @@
-import { Card } from "antd";
-import Meta from "antd/es/card/Meta";
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { homeItems } from "@/lib/menu";
+import { Card } from 'antd';
+import Meta from 'antd/es/card/Meta';
+
+import { homeItems } from '@/lib/menu';
 
 export default async function Home() {
   return (

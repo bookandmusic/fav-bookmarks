@@ -1,8 +1,8 @@
-import "@ant-design/v5-patch-for-react-19";
+import { Button, Result } from 'antd';
 
-import { Button, Result } from "antd";
+import { BaseLayout } from '@/components/layout/base';
 
-import { BaseLayout } from "@/components/layout/base";
+import '@ant-design/v5-patch-for-react-19';
 
 export default function NotFound() {
   return (
@@ -20,7 +20,7 @@ export default function NotFound() {
             type="primary"
             href="/"
             style={{
-              color: "white",
+              color: 'white',
             }}
           >
             返回首页

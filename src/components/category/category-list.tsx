@@ -1,7 +1,7 @@
-import { Icon } from "@iconify/react";
-import { Button, List, Modal } from "antd";
+import { Icon } from '@iconify/react';
+import { Button, List, Modal } from 'antd';
 
-import { Category } from "@/types/category";
+import { Category } from '@/types/category';
 
 export const CategoryList = ({
   items,
@@ -18,12 +18,12 @@ export const CategoryList = ({
 
   const confirmDelete = (item: Category) => {
     modal.confirm({
-      title: "确认删除",
-      icon: <Icon icon="lucide:delete" width={20} color="#ff4d4f" />,
+      title: '确认删除',
+      icon: <Icon icon="lucide:delete" width={24} color="#ff4d4f" />,
       content: `确定要删除分类 "${item.name}" 吗？`,
-      okText: "确认",
-      cancelText: "取消",
-      okType: "danger",
+      okText: '确认',
+      cancelText: '取消',
+      okType: 'danger',
       onOk: () => onDelete?.(item),
     });
   };
@@ -44,7 +44,7 @@ export const CategoryList = ({
                 onClick={() => onClick?.(item)}
               >
                 <Icon
-                  icon={item.icon || "flat-color-icons:folder"}
+                  icon={item.icon || 'flat-color-icons:folder'}
                   width={20}
                   height={20}
                 />

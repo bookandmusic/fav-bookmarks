@@ -1,7 +1,7 @@
-import { Category } from "@prisma/client";
+import { Category } from '@prisma/client';
 
-import prisma from "@/lib/prisma";
-import { CategoryCreate, CategoryFormValue, CateType } from "@/types/category";
+import prisma from '@/lib/prisma';
+import { CategoryCreate, CategoryFormValue, CateType } from '@/types/category';
 
 export const categoryService = {
   // 创建分类
@@ -45,23 +45,23 @@ export const categoryService = {
 
   // 查询当前用户或公开的分类
   async findMany(
-    userId: number | null,
     type: CateType,
     isPublic?: boolean,
+    userId?: number
   ): Promise<Category[]> {
-    if (userId) {
+    if (userId !== undefined) {
       // 如果有 userId，则只查询该用户的数据
       return await prisma.category.findMany({
         where: { userId, type },
-        orderBy: [{ id: "desc" }],
+        orderBy: [{ id: 'desc' }],
       });
     }
 
-    if (isPublic) {
+    if (isPublic !== undefined) {
       // 没有 userId 但有 isPublic，则只查询公开的
       return await prisma.category.findMany({
-        where: { isPublic: true, type },
-        orderBy: [{ id: "desc" }],
+        where: { isPublic: isPublic, type },
+        orderBy: [{ id: 'desc' }],
       });
     }
 
@@ -72,10 +72,10 @@ export const categoryService = {
   // 更新分类
   async update(
     id: number,
-    data: Partial<CategoryFormValue>,
+    data: Partial<CategoryFormValue>
   ): Promise<Category> {
     const updateData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== undefined),
+      Object.entries(data).filter(([, value]) => value !== undefined)
     );
 
     return await prisma.category.update({

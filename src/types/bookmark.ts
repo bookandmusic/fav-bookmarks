@@ -2,8 +2,9 @@ export interface Bookmark {
   id: number;
   title: string;
   url: string;
-  icon: string | null;
-  description: string | null;
+  icon?: string;
+  isPublic?: boolean;
+  description?: string;
   categoryId: number;
 }
 
@@ -22,16 +23,18 @@ export interface BookmarResponse {
 export interface BookmarkFormValue {
   title: string;
   url: string;
-  description?: string | null;
-  icon?: string | null;
+  description?: string;
+  icon?: string;
   categoryId: number;
+  isPublic?: boolean;
 }
 
 export type BookmarkFormFields = {
   title: string;
   url: string;
-  description?: string | null;
-  icon?: string | null;
+  description?: string;
+  icon?: string;
+  isPublic?: boolean;
   categoryId: number[];
 };
 
@@ -40,7 +43,7 @@ export interface BookmarkCreate extends BookmarkFormValue {
 }
 
 export interface BookmarkSearchFormValue {
-  keyword: string | null;
-  categoryId: number | null;
-  isPublic: boolean | null;
+  keyword?: string;
+  categoryId?: number;
+  isPublic?: boolean;
 }

@@ -1,11 +1,11 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
+import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
 
-import { Footer } from "@/components/layout/frontend/footer";
-import { Header } from "@/components/layout/frontend/header";
-import { UserProfileCard } from "@/components/user/user-profile";
-import { authOptions } from "@/lib/auth/options";
-import { userService } from "@/services/user";
+import { Footer } from '@/components/layout/frontend/footer';
+import { Header } from '@/components/layout/frontend/header';
+import { UserProfileCard } from '@/components/user/user-profile';
+import { authOptions } from '@/lib/auth/options';
+import { userService } from '@/services/user';
 
 export default async function Layout({
   children,
@@ -14,11 +14,11 @@ export default async function Layout({
 }) {
   const session = await getServerSession(authOptions);
   if (!session) {
-    redirect("/login");
+    redirect('/login');
   }
   const user = await userService.findUserByUniqueKey(session.user.name);
   if (!user) {
-    redirect("/login");
+    redirect('/login');
   }
 
   return (

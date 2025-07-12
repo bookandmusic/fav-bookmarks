@@ -1,7 +1,7 @@
-import bcrypt from "bcryptjs";
+import bcrypt from 'bcryptjs';
 
-import prisma from "@/lib/prisma";
-import { Role } from "@/types/user";
+import prisma from '@/lib/prisma';
+import { Role } from '@/types/user';
 
 export const userService = {
   async findUserByUniqueKey(key: string) {

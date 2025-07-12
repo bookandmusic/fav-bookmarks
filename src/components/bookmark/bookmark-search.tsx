@@ -1,9 +1,9 @@
-import { Collapse, CollapseProps } from "antd";
+import { Collapse, CollapseProps } from 'antd';
 
-import { BookmarkSearchFormValue } from "@/types/bookmark";
-import { Category } from "@/types/category";
+import { BookmarkSearchFormValue } from '@/types/bookmark';
+import { Category } from '@/types/category';
 
-import { BookmarkSearchForm } from "./BookmarkSearchForm";
+import { BookmarkSearchForm } from './bookmark-search-form';
 
 export const BookmarkSearch = ({
   categoryList,
@@ -12,10 +12,10 @@ export const BookmarkSearch = ({
   categoryList: Category[];
   onFinish?: (values: BookmarkSearchFormValue) => void;
 }) => {
-  const items: CollapseProps["items"] = [
+  const items: CollapseProps['items'] = [
     {
-      key: "1",
-      label: "筛选条件",
+      key: '1',
+      label: '筛选条件',
       children: (
         <BookmarkSearchForm categoryList={categoryList} onFinish={onFinish} />
       ),

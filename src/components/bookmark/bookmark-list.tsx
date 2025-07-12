@@ -1,8 +1,9 @@
-import { Icon } from "@iconify/react";
-import { Avatar, Button, List, Modal } from "antd";
-import { memo } from "react";
+import { memo } from 'react';
 
-import { Bookmark } from "@/types/bookmark";
+import { Icon } from '@iconify/react';
+import { Avatar, Button, List, Modal } from 'antd';
+
+import { Bookmark } from '@/types/bookmark';
 
 export const BookmarkList = memo(
   ({
@@ -15,6 +16,17 @@ export const BookmarkList = memo(
     onDelete?: (item: Bookmark) => void;
   }) => {
     const [modal, contextHolder] = Modal.useModal();
+    const confirmDelete = (item: Bookmark) => {
+      modal.confirm({
+        title: '确认删除',
+        icon: <Icon icon="lucide:delete" width={24} color="#ff4d4f" />,
+        content: `确定要删除书签"${item.title}" 吗？`,
+        okText: '确认',
+        cancelText: '取消',
+        okType: 'danger',
+        onOk: () => onDelete?.(item),
+      });
+    };
 
     return (
       <>
@@ -51,23 +63,7 @@ export const BookmarkList = memo(
                   <Button
                     type="text"
                     danger
-                    onClick={() => {
-                      modal.confirm({
-                        title: "确认删除",
-                        icon: (
-                          <Icon
-                            icon="lucide:delete"
-                            width={20}
-                            color="#ff4d4f"
-                          />
-                        ),
-                        content: `确定要删除书签"${item.title}" 吗？`,
-                        okText: "确认",
-                        cancelText: "取消",
-                        okType: "danger",
-                        onOk: () => onDelete(item),
-                      });
-                    }}
+                    onClick={() => confirmDelete(item)}
                   >
                     删除
                   </Button>
@@ -78,7 +74,7 @@ export const BookmarkList = memo(
         />
       </>
     );
-  },
+  }
 );
 
-BookmarkList.displayName = "BookmarkList";
+BookmarkList.displayName = 'BookmarkList';

@@ -1,9 +1,9 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
+import { redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
 
-import { AdminLayout } from "@/components/layout/admin/layout";
-import { authOptions } from "@/lib/auth/options";
-import { userService } from "@/services/user";
+import { AdminLayout } from '@/components/layout/admin/layout';
+import { authOptions } from '@/lib/auth/options';
+import { userService } from '@/services/user';
 
 export default async function Layout({
   children,
@@ -12,11 +12,11 @@ export default async function Layout({
 }) {
   const session = await getServerSession(authOptions);
   if (!session) {
-    redirect("/login");
+    redirect('/login');
   }
   const user = await userService.findUserByUniqueKey(session.user.name);
   if (!user) {
-    redirect("/login");
+    redirect('/login');
   }
   return <AdminLayout user={user!}>{children}</AdminLayout>;
 }

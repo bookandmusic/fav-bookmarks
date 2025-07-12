@@ -1,16 +1,16 @@
 export const CateType = {
-  Project: "Project",
-  BookMark: "BookMark",
+  Project: 'Project',
+  BookMark: 'BookMark',
 } as const;
 
-export type CateType = "Project" | "BookMark";
+export type CateType = 'Project' | 'BookMark';
 
 export interface CategoryFormValue {
   name: string;
-  icon: string | null;
+  icon?: string;
   isPublic: boolean;
   type: CateType;
-  pid: number | null;
+  pid?: number;
 }
 
 export type CategoryFormFields = {
@@ -28,8 +28,8 @@ export interface CategoryCreate extends CategoryFormValue {
 export interface Category {
   id: number;
   name: string;
-  icon: string | null;
-  pid: number | null;
+  icon?: string;
+  pid?: number;
   isPublic: boolean;
   type: CateType;
 }

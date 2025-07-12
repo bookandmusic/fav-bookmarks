@@ -1,11 +1,10 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
-import tseslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
 import eslintPluginPrettier from "eslint-plugin-prettier";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import nextEslintPlugin from "@next/eslint-plugin-next";
+import eslintPluginUnicorn from "eslint-plugin-unicorn";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,49 +14,76 @@ const compat = new FlatCompat({
 });
 
 export default [
-  // ✅ 使用旧的共享配置，如 next/core-web-vitals
-  ...compat.extends("next/core-web-vitals", "plugin:@typescript-eslint/recommended", "prettier"),
-
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
-    languageOptions: {
-      parser: tsParser,
-      parserOptions: {
-        project: "./tsconfig.json",
-        tsconfigRootDir: __dirname,
-        ecmaVersion: 2020,
-        sourceType: "module",
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-    },
     plugins: {
-      "@typescript-eslint": tseslint,
-      "prettier": eslintPluginPrettier,
+      prettier: eslintPluginPrettier,
       "simple-import-sort": simpleImportSort,
       "@next": nextEslintPlugin,
     },
     rules: {
-      // ✅ Prettier 格式化
-      "prettier/prettier": "error",
+      // ✅ 基础格式化
+      "prettier/prettier": [
+        "error",
+        {
+          printWidth: 80,
+          tabWidth: 2,
+          useTabs: false,
+          semi: true,
+          singleQuote: true,
+          trailingComma: "es5",
+          bracketSpacing: true,
+          arrowParens: "always",
+          endOfLine: "auto",
+        },
+      ],
 
       // ✅ 导入排序
-      "simple-import-sort/imports": "error",
+      "simple-import-sort/imports": [
+        "error",
+        {
+          groups: [
+            // React/Next 先排序
+            ["^react", "^next"],
+            // 外部库
+            ["^@?\\w"],
+            // @ 开头的别名路径
+            ["^@"],
+            // 项目内相对路径
+            ["^\\."],
+          ],
+        },
+      ],
       "simple-import-sort/exports": "error",
 
-      // ✅ 类型检查相关规则
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-
-      // ✅ JS 基础规则
-      "no-console": "warn",
-      "no-debugger": "error",
-
-      // ✅ Next.js 规则增强
-      "@next/next/no-img-element": "warn",
-      "@next/next/google-font-display": "warn",
+      // ✅ 空格控制
+      "no-multi-spaces": [
+        "error",
+        {
+          ignoreEOLComments: true,
+          exceptions: {
+            Property: true,
+            VariableDeclarator: true,
+            ImportSpecifier: true,
+          },
+        },
+      ],
+      "no-trailing-spaces": "error",
+      "no-multiple-empty-lines": [
+        "error",
+        {
+          max: 1,
+          maxBOF: 0,
+          maxEOF: 0,
+        },
+      ],
+    },
+  },
+    eslintPluginUnicorn.configs.recommended,
+  {
+    rules: {
+      "unicorn/better-regex": "warn",
     },
   },
 ];

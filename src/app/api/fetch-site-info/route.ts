@@ -1,15 +1,15 @@
-import { NextRequest } from "next/server";
+import { NextRequest } from 'next/server';
 
-import { fetchMetadata } from "@/lib/fetch-utils";
+import { fetchMetadata } from '@/lib/fetch-utilities';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const url = searchParams.get("url");
+  const url = searchParams.get('url');
   // todo: 从后台配置获取proxy
   const proxy = undefined;
 
   if (!url) {
-    return Response.json({ error: "缺少网址参数" }, { status: 400 });
+    return Response.json({ error: '缺少网址参数' }, { status: 400 });
   }
 
   try {
@@ -19,15 +19,12 @@ export async function GET(request: NextRequest) {
     });
 
     return Response.json(result);
-  } catch (e) {
+  } catch (error) {
     return Response.json(
       {
-        icon: null,
-        title: null,
-        description: null,
-        error: e instanceof Error ? e.message : String(e),
+        error: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -1,6 +1,6 @@
-import { Button, Tabs } from "antd";
+import { Button, Tabs } from 'antd';
 
-import { CateType } from "@/types/category";
+import { CateType } from '@/types/category';
 
 export const CategoryTabs = ({
   onTabSwitch,
@@ -10,8 +10,8 @@ export const CategoryTabs = ({
   onAddCategory?: () => void;
 }) => {
   const tabList = [
-    { key: CateType.BookMark, tab: "书签" },
-    { key: CateType.Project, tab: "项目" },
+    { key: CateType.BookMark, tab: '书签' },
+    { key: CateType.Project, tab: '项目' },
   ];
 
   return (

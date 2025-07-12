@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma from '@/lib/prisma';
 
 export const oauthService = {
   async findUserOAuthAccount(provider: string, providerId: string) {
@@ -22,7 +22,7 @@ export const oauthService = {
       data,
     });
   },
-  async updateUserOAuthAccount(params: {
+  async updateUserOAuthAccount(parameters: {
     id: number;
     data: {
       accessToken: string;
@@ -30,7 +30,7 @@ export const oauthService = {
       expiresAt: Date;
     };
   }) {
-    const { id, data } = params;
+    const { id, data } = parameters;
 
     return await prisma.userOAuth.update({
       where: {

@@ -1,12 +1,13 @@
-import "@ant-design/v5-patch-for-react-19";
+import { useEffect, useState } from 'react';
 
-import { Drawer } from "antd";
-import { useState } from "react";
+import { Drawer } from 'antd';
 
-import { Category } from "@/types/category";
-import { CategoryFormValue } from "@/types/category";
+import { Category } from '@/types/category';
+import { CategoryFormValue } from '@/types/category';
 
-import { CategoryEditForm } from "./CategoryEditForm";
+import { CategoryEditForm } from './category-edit-form';
+
+import '@ant-design/v5-patch-for-react-19';
 
 export const CategoryEditDrawer = ({
   categoryList,
@@ -16,12 +17,17 @@ export const CategoryEditDrawer = ({
   setOpen,
 }: {
   categoryList: Category[];
-  initialValues: CategoryFormValue | null;
+  initialValues?: CategoryFormValue;
   onFinish?: (values: CategoryFormValue) => void;
   open: boolean;
   setOpen: (value: boolean) => void;
 }) => {
   const [resetForm, setResetForm] = useState(false);
+  useEffect(() => {
+    if (open == false) {
+      setResetForm((previous) => !previous);
+    }
+  }, [open]);
   return (
     <Drawer
       width={600}

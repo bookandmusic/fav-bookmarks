@@ -1,10 +1,10 @@
-"use client";
-import { useEffect, useMemo, useState } from "react";
+'use client';
+import { useEffect, useMemo, useState } from 'react';
 
-import { fetchCategories } from "@/client/categoryClient";
-import { Category, CateType } from "@/types/category";
+import { fetchCategories } from '@/client/category-client';
+import { Category, CateType } from '@/types/category';
 
-export function useCategoryData(setError: (error: Error | null) => void) {
+export function useCategoryData(setError: (error: Error | undefined) => void) {
   const [reload, setReload] = useState(false);
   const [categoryType, setCategoryType] = useState<CateType>(CateType.BookMark);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -12,8 +12,8 @@ export function useCategoryData(setError: (error: Error | null) => void) {
   useEffect(() => {
     fetchCategories(categoryType)
       .then(setCategoryList)
-      .catch((err) => {
-        setError(err);
+      .catch((error) => {
+        setError(error);
         setCategoryList([]);
       });
   }, [categoryType, reload, setError]);
@@ -42,7 +42,7 @@ export function usePagination(initialPage = 1, pageSize = 10) {
 }
 
 export function useCategoryNavigation(setPage: (page: number) => void) {
-  const [currentPid, setCurrentPid] = useState<number | null>(null);
+  const [currentPid, setCurrentPid] = useState<number | undefined>();
   const [prePid, setPrePid] = useState<number[]>([]);
   const [hasBack, setHasBack] = useState(false);
 
@@ -50,7 +50,7 @@ export function useCategoryNavigation(setPage: (page: number) => void) {
   const handleItemClick = (item: Category) => {
     setPage(1);
     setCurrentPid(item.id);
-    setPrePid((prev) => [...prev, item.id]);
+    setPrePid((previous) => [...previous, item.id]);
     setHasBack(true);
   };
 
@@ -60,7 +60,7 @@ export function useCategoryNavigation(setPage: (page: number) => void) {
       setPage(1);
       const newPrePid = [...prePid];
       newPrePid.pop();
-      const newCurrentPid = newPrePid[newPrePid.length - 1] ?? null;
+      const newCurrentPid = newPrePid.at(-1) ?? undefined;
       setCurrentPid(newCurrentPid);
       setPrePid(newPrePid);
       setHasBack(newPrePid.length > 0);
@@ -69,7 +69,7 @@ export function useCategoryNavigation(setPage: (page: number) => void) {
 
   // 重置导航状态
   const resetNavigation = () => {
-    setCurrentPid(null);
+    setCurrentPid(undefined);
     setPrePid([]);
     setHasBack(false);
   };
@@ -84,7 +84,7 @@ export function useCategoryNavigation(setPage: (page: number) => void) {
   };
 }
 
-export function useCategory(setError: (error: Error | null) => void) {
+export function useCategory(setError: (error: Error | undefined) => void) {
   const { reload, setReload, categoryList, setCategoryType } =
     useCategoryData(setError);
   const { page, setPage, pageSize, resetPage } = usePagination();

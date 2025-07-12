@@ -1,10 +1,10 @@
-import axios from "axios";
-import { load } from "cheerio";
+import axios from 'axios';
+import { load } from 'cheerio';
 
 export interface MetadataResult {
-  icon: string | null;
-  title: string | null;
-  description: string | null;
+  icon: string | undefined;
+  title: string | undefined;
+  description: string | undefined;
 }
 
 export interface FetchOptions {
@@ -14,7 +14,7 @@ export interface FetchOptions {
 
 export async function fetchMetadata(
   url: string,
-  options: FetchOptions = {},
+  options: FetchOptions = {}
 ): Promise<MetadataResult> {
   const { timeout = 3000, proxyUrl } = options;
 
@@ -30,7 +30,7 @@ export async function fetchMetadata(
       signal: controller.signal,
       headers: {
         // 可选设置 User-Agent 避免被屏蔽
-        "User-Agent": "BookmarkFetcher/1.0",
+        'User-Agent': 'BookmarkFetcher/1.0',
       },
     });
 
@@ -41,14 +41,14 @@ export async function fetchMetadata(
 
     // 解析 favicon
     let iconHref =
-      $('link[rel="icon"]').attr("href") ||
-      $('link[rel="shortcut icon"]').attr("href");
+      $('link[rel="icon"]').attr('href') ||
+      $('link[rel="shortcut icon"]').attr('href');
 
     if (!iconHref) {
-      iconHref = "/favicon.ico";
+      iconHref = '/favicon.ico';
     }
 
-    const baseUrl = url.endsWith("/") ? url : new URL(url).origin;
+    const baseUrl = url.endsWith('/') ? url : new URL(url).origin;
     const iconUrl = new URL(iconHref, baseUrl).href;
 
     // 验证 icon 是否真实存在
@@ -62,16 +62,16 @@ export async function fetchMetadata(
       isValidIcon = false;
     }
 
-    const finalIconUrl = isValidIcon ? iconUrl : null;
+    const finalIconUrl = isValidIcon ? iconUrl : undefined;
 
     // 解析 title
-    const title = $("title").text().trim() || null;
+    const title = $('title').text().trim() || undefined;
 
     // 解析 description
     const description =
-      $('meta[name="description"]').attr("content")?.trim() ||
-      $('meta[property="og:description"]').attr("content")?.trim() ||
-      null;
+      $('meta[name="description"]').attr('content')?.trim() ||
+      $('meta[property="og:description"]').attr('content')?.trim() ||
+      undefined;
 
     return {
       icon: finalIconUrl,

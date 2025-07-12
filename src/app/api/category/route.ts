@@ -1,60 +1,63 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
+import { NextRequest, NextResponse } from 'next/server';
 
-import { authenticateRequest } from "@/lib/auth/authMiddleware";
-import { createErrorResponse } from "@/lib/httpHelper";
-import { logger } from "@/lib/logger";
-import { categoryService } from "@/services/category";
+import { z } from 'zod';
 
-const cateTypeEnum = z.enum(["Project", "BookMark"]);
+import { authenticateRequest } from '@/lib/auth/auth-middleware';
+import { createErrorResponse } from '@/lib/http-helper';
+import { logger } from '@/lib/logger';
+import { replaceNullWithUndefined } from '@/lib/utilities';
+import { categoryService } from '@/services/category';
+
+const cateTypeEnum = z.enum(['Project', 'BookMark']);
 
 // GET /api/category
 const querySchema = z.object({
-  type: cateTypeEnum.optional().default("BookMark"),
+  type: cateTypeEnum.optional().default('BookMark'),
   isPublic: z
     .string()
     .optional()
-    .transform((val) => val === "true"),
+    .transform((value) => value === 'true'),
 });
 export async function GET(request: NextRequest) {
   const userId = await authenticateRequest();
   if (!userId) {
-    return createErrorResponse("用户未登录", 401);
+    return createErrorResponse('用户未登录', 401);
   }
 
-  const searchParams = Object.fromEntries(request.nextUrl.searchParams);
-  const result = querySchema.safeParse(searchParams);
+  const searchParameters = Object.fromEntries(request.nextUrl.searchParams);
+  const result = querySchema.safeParse(searchParameters);
 
   if (!result.success) {
-    return createErrorResponse("查询参数无效", 400);
+    return createErrorResponse('查询参数无效', 400);
   }
 
   const { type: cateType, isPublic } = result.data;
   try {
     const categories = await categoryService.findMany(
-      userId,
       cateType,
       isPublic,
+      userId
     );
-    return NextResponse.json(categories);
+    const transformedCategories = replaceNullWithUndefined(categories);
+    return NextResponse.json(transformedCategories);
   } catch (error) {
-    logger.error("查询分类失败", error);
-    return createErrorResponse("查询分类失败", 500);
+    logger.error('查询分类失败', error);
+    return createErrorResponse('查询分类失败', 500);
   }
 }
 
 // POST /api/category
 const postSchema = z.object({
   name: z.string().min(1),
-  pid: z.number().nullable(),
-  icon: z.string().nullable(),
-  isPublic: z.boolean(),
+  pid: z.number().optional(),
+  icon: z.string().optional(),
+  isPublic: z.boolean().optional(),
   type: cateTypeEnum,
 });
 export async function POST(request: NextRequest) {
   const userId = await authenticateRequest();
   if (!userId) {
-    return createErrorResponse("用户未登录", 401);
+    return createErrorResponse('用户未登录', 401);
   }
 
   try {
@@ -63,16 +66,17 @@ export async function POST(request: NextRequest) {
     const result = postSchema.safeParse(body);
 
     if (!result.success) {
-      return createErrorResponse("参数校验失败", 400, result.error.issues);
+      return createErrorResponse('参数校验失败', 400, result.error.issues);
     }
     const newCategory = await categoryService.create({
       ...result.data,
+      isPublic: result.data.isPublic ?? false,
       userId: userId,
     });
 
     return NextResponse.json(newCategory, { status: 201 });
   } catch (error) {
-    logger.error("创建分类失败", error);
-    return createErrorResponse("创建分类失败", 500);
+    logger.error('创建分类失败', error);
+    return createErrorResponse('创建分类失败', 500);
   }
 }

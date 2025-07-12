@@ -1,13 +1,14 @@
-import { Icon } from "@iconify/react";
-import { Avatar, Button, Dropdown, Popover } from "antd";
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { headerMenuItems } from "@/lib/menu";
+import { Icon } from '@iconify/react';
+import { Avatar, Button, Dropdown, Popover } from 'antd';
+
+import { headerMenuItems } from '@/lib/menu';
 
 // 统一菜单项样式类
 const menuItemClass =
-  "text-sm flex items-center gap-1.5 px-2 py-1.5 rounded-md";
+  'text-sm flex items-center gap-1.5 px-2 py-1.5 rounded-md';
 
 const menuItems = headerMenuItems.map((item) => {
   return {

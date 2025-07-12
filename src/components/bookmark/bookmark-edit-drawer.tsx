@@ -1,12 +1,13 @@
-import "@ant-design/v5-patch-for-react-19";
+import { useEffect, useState } from 'react';
 
-import { Drawer } from "antd";
-import { useState } from "react";
+import { Drawer } from 'antd';
 
-import { BookmarkFormValue } from "@/types/bookmark";
-import { Category } from "@/types/category";
+import { BookmarkFormValue } from '@/types/bookmark';
+import { Category } from '@/types/category';
 
-import { BookmarkForm } from "./BookmarkForm";
+import { BookmarkForm } from './bookmark-form';
+
+import '@ant-design/v5-patch-for-react-19';
 
 export const BookmarkEditDrawer = ({
   categoryList,
@@ -17,19 +18,24 @@ export const BookmarkEditDrawer = ({
   setError,
 }: {
   categoryList: Category[];
-  initialValues: BookmarkFormValue | null;
+  initialValues: BookmarkFormValue | undefined;
   onFinish?: (values: BookmarkFormValue) => void;
   open: boolean;
   setOpen: (v: boolean) => void;
-  setError: (e: Error | null) => void;
+  setError: (error: Error | undefined) => void;
 }) => {
   const [resetForm, setResetForm] = useState(false);
+  useEffect(() => {
+    if (open == false) {
+      setResetForm((previous) => !previous);
+    }
+  }, [open]);
   return (
     <Drawer
-      closable={{ "aria-label": "Close Button" }}
+      closable={{ 'aria-label': 'Close Button' }}
       onClose={() => {
         setOpen(false);
-        setResetForm(!resetForm);
+        setResetForm((previous) => !previous);
       }}
       open={open}
       width={600}

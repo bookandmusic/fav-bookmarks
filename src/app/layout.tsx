@@ -1,11 +1,11 @@
-import "./globals.css";
+import type { Metadata } from 'next';
 
-import type { Metadata } from "next";
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "FavBookmarks",
-  description: "收藏夹管理网站",
-  icons: "/logo.svg",
+  title: 'FavBookmarks',
+  description: '收藏夹管理网站',
+  icons: '/logo.svg',
 };
 
 export default function RootLayout({

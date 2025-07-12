@@ -1,14 +1,15 @@
-import { Icon } from "@iconify/react";
-import React from "react";
+import React from 'react';
 
-interface FullScreenOverlayProps {
+import { Icon } from '@iconify/react';
+
+interface FullScreenOverlayProperties {
   icon?: string;
   color?: string;
 }
 
-export const FullScreenOverlay: React.FC<FullScreenOverlayProps> = ({
-  icon = "eos-icons:bubble-loading",
-  color = "text-indigo-600",
+export const FullScreenOverlay: React.FC<FullScreenOverlayProperties> = ({
+  icon = 'eos-icons:bubble-loading',
+  color = 'text-indigo-600',
 }) => {
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-white/80">

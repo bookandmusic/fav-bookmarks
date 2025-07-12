@@ -1,25 +1,26 @@
-"use client";
-import { Icon } from "@iconify/react";
-import { Pagination } from "antd";
-import { useState } from "react";
+'use client';
+import { useState } from 'react';
+
+import { Icon } from '@iconify/react';
+import { Pagination } from 'antd';
 
 import {
-  createBookMark,
-  deleteBookMark,
-  updateBookMark,
-} from "@/client/bookMarkClient";
+  createBookmark,
+  deleteBookmark,
+  updateBookmark,
+} from '@/client/book-mark-client';
 import {
   BookmarkEditDrawer,
   BookmarkList,
   BookmarkSearch,
   BookmarkToolbar,
-} from "@/components/bookmark/index";
-import { FullScreenOverlay } from "@/components/loading";
-import { useBookMarkData } from "@/hooks/useBookmark";
-import { useCategoryData } from "@/hooks/useCategory";
-import { useNotification } from "@/hooks/useNotification";
-import { asyncWrapper } from "@/lib/utils";
-import { Bookmark, BookmarkFormValue } from "@/types/bookmark";
+} from '@/components/bookmark/index';
+import { FullScreenOverlay } from '@/components/loading';
+import { useBookMarkData } from '@/hooks/use-bookmark';
+import { useCategoryData } from '@/hooks/use-category';
+import { useNotification } from '@/hooks/use-notification';
+import { asyncWrapper } from '@/lib/utilities';
+import { Bookmark, BookmarkFormValue } from '@/types/bookmark';
 
 export default function BookMarks() {
   const { setError, setInfo, contextHolder } = useNotification();
@@ -37,14 +38,16 @@ export default function BookMarks() {
   const [modalOpen, setModalOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [mode, setMode] = useState<"create" | "edit">("create");
-  const [currentBookMark, setCurrentBookMark] = useState<Bookmark | null>(null);
+  const [mode, setMode] = useState<'create' | 'edit'>('create');
+  const [currentBookMark, setCurrentBookMark] = useState<
+    Bookmark | undefined
+  >();
 
   const handleCreate = (values: BookmarkFormValue) => {
     setIsLoading(true);
-    asyncWrapper(createBookMark(values), {
+    asyncWrapper(createBookmark(values), {
       onSuccess: () => {
-        setInfo(`添加${values.title}成功`);
+        setInfo(`书签：${values.title}，添加成功`);
         setReload(!reload);
         setModalOpen(false);
       },
@@ -55,9 +58,9 @@ export default function BookMarks() {
 
   const handleUpdate = (id: number, values: BookmarkFormValue) => {
     setIsLoading(true);
-    asyncWrapper(updateBookMark(id, values), {
+    asyncWrapper(updateBookmark(id, values), {
       onSuccess: () => {
-        setInfo(`修改${values.title}成功`);
+        setInfo(`书签：${values.title}，修改成功`);
         setReload(!reload);
         setModalOpen(false);
       },
@@ -68,9 +71,9 @@ export default function BookMarks() {
 
   const delBookMark = (item: Bookmark) => {
     setIsLoading(true);
-    asyncWrapper(deleteBookMark(item.id), {
+    asyncWrapper(deleteBookmark(item.id), {
       onSuccess: () => {
-        setInfo(`删除${item.title}成功`);
+        setInfo(`书签：${item.title}，删除成功`);
         setReload(!reload);
       },
       onError: setError,
@@ -79,14 +82,14 @@ export default function BookMarks() {
   };
 
   const editBookMark = (item: Bookmark) => {
-    setMode("edit");
+    setMode('edit');
     setCurrentBookMark(item);
     setModalOpen(true);
   };
 
   const addBookMark = () => {
-    setCurrentBookMark(null);
-    setMode("create");
+    setCurrentBookMark(undefined);
+    setMode('create');
     setModalOpen(true);
   };
 
@@ -99,7 +102,7 @@ export default function BookMarks() {
           onAddClick={addBookMark}
           onSearchClick={() => setShowSearch(!showSearch)}
           onAllClick={() => {
-            setSearchParams(null);
+            setSearchParams(undefined);
             setShowSearch(false);
           }}
         ></BookmarkToolbar>
@@ -142,7 +145,7 @@ export default function BookMarks() {
         categoryList={categoryList}
         initialValues={currentBookMark}
         onFinish={(values) => {
-          if (mode === "edit" && currentBookMark) {
+          if (mode === 'edit' && currentBookMark) {
             handleUpdate(currentBookMark.id, values);
           } else {
             handleCreate(values);
