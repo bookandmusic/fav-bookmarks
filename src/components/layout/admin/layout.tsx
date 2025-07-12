@@ -18,45 +18,82 @@ import {
 
 import { UserProfileCard } from '@/components/user/user-profile';
 
+// ===========================
+// key ↔ path 映射（固定菜单）
+// ===========================
+const keyToPath: Record<string, string> = {
+  dashboard: '/admin/',
+  categories: '/admin/categories',
+  tags: '/admin/tags',
+  bookmarks: '/admin/bookmarks',
+  projects: '/admin/projects',
+  syncBookmarks: '/admin/sync-bookmarks',
+  profile: '/admin/profile',
+};
+
+const pathToKey: Record<string, string> = Object.fromEntries(
+  Object.entries(keyToPath).map(([key, path]) => [path, key])
+);
+
+// ===========================
+// 菜单定义
+// ===========================
 const adminMenus = [
   {
     key: 'dashboard',
-    icon: <Icon icon="dashicons:dashboard" width={16} />,
+    icon: <Icon icon="streamline:dashboard-3" width={16} />,
     label: '仪表盘',
     path: '/admin/',
   },
   {
-    key: 'categories',
-    icon: <Icon icon="dashicons:category" width={16} />,
-    label: '分类',
-    path: '/admin/categories',
+    key: 'resources',
+    icon: <Icon icon="gg:folder" width={16} />,
+    label: '资源管理',
+    children: [
+      {
+        key: 'categories',
+        icon: <Icon icon="dashicons:category" width={16} />,
+        label: '分类',
+      },
+      {
+        key: 'tags',
+        icon: <Icon icon="dashicons:tag" width={16} />,
+        label: '标签',
+      },
+      {
+        key: 'bookmarks',
+        icon: <Icon icon="bi:bookmark-dash-fill" width={16} />,
+        label: '书签',
+      },
+      {
+        key: 'projects',
+        icon: <Icon icon="si:projects-fill" width={16} />,
+        label: '项目',
+      },
+    ],
   },
   {
-    key: 'tags',
-    icon: <Icon icon="dashicons:tag" width={16} />,
-    label: '标签',
-    path: '/admin/tags',
-  },
-  {
-    key: 'bookmarks',
-    icon: <Icon icon="bi:bookmark-dash-fill" width={16} />,
-    label: '书签',
-    path: '/admin/bookmarks',
-  },
-  {
-    key: 'projects',
-    icon: <Icon icon="si:projects-fill" width={16} />,
-    label: '项目',
-    path: '/admin/projects',
-  },
-  {
-    key: 'users',
-    icon: <Icon icon="dashicons:admin-users" width={16} />,
-    label: '用户',
-    path: '/admin/users',
+    key: 'settings',
+    icon: <Icon icon="rivet-icons:settings" width={16} />,
+    label: '系统管理',
+    children: [
+      {
+        key: 'syncBookmarks',
+        icon: <Icon icon="mdi:web-sync" width={16} />,
+        label: '书签同步',
+      },
+      {
+        key: 'profile',
+        icon: <Icon icon="fluent:person-24-filled" width={16} />,
+        label: '个人资料',
+      },
+    ],
   },
 ];
 
+// ===========================
+// Logo 组件
+// ===========================
 const Logo = ({
   collapsed,
   hiddenLogo,
@@ -75,6 +112,9 @@ const Logo = ({
   </Link>
 );
 
+// ===========================
+// 主布局组件
+// ===========================
 export function AdminLayout({
   user,
   children,
@@ -89,34 +129,32 @@ export function AdminLayout({
   const pathname = usePathname();
   const [menuKey, setMenuKey] = useState('dashboard');
 
+  // 根据 pathname 匹配 key
   useEffect(() => {
-    // 按 path 长度从长到短排序，确保精准匹配
-    const sortedMenus = [...adminMenus].sort((a, b) =>
-      b.path.localeCompare(a.path)
-    );
-    const matched = sortedMenus.find((item) => pathname.startsWith(item.path));
-    if (matched) setMenuKey(matched.key);
+    const matchedPath = Object.keys(pathToKey)
+      .sort((a, b) => b.length - a.length)
+      .find((p) => pathname.startsWith(p));
+
+    if (matchedPath) setMenuKey(pathToKey[matchedPath]);
   }, [pathname]);
 
+  // 渲染菜单组件
   const renderMenu = (collapsed: boolean, hiddenLogo: boolean) => (
-    <>
-      <div className="h-full flex flex-col">
-        <Logo collapsed={collapsed} hiddenLogo={hiddenLogo} />
-
-        <Menu
-          mode="inline"
-          selectedKeys={[menuKey]}
-          items={adminMenus}
-          className="border-none"
-          onClick={({ key }) => {
-            setMenuKey(key);
-            setOpen(false);
-            const target = adminMenus.find((item) => item.key === key);
-            if (target?.path) router.push(target.path);
-          }}
-        />
-      </div>
-    </>
+    <div className="h-full flex flex-col">
+      <Logo collapsed={collapsed} hiddenLogo={hiddenLogo} />
+      <Menu
+        mode="inline"
+        selectedKeys={[menuKey]}
+        items={adminMenus}
+        className="border-none"
+        onClick={({ key }) => {
+          setMenuKey(key);
+          setOpen(false);
+          const path = keyToPath[key];
+          if (path) router.push(path);
+        }}
+      />
+    </div>
   );
 
   return (
@@ -135,7 +173,7 @@ export function AdminLayout({
       }}
     >
       <Layout className="h-screen w-full">
-        {/* 移动端抽屉菜单 */}
+        {/* 移动端菜单 */}
         <Drawer
           placement="left"
           onClose={() => setOpen(false)}
@@ -147,7 +185,7 @@ export function AdminLayout({
           {renderMenu(collapsed, false)}
         </Drawer>
 
-        {/* PC 端侧边栏菜单 */}
+        {/* PC 侧边栏 */}
         <Layout.Sider
           // eslint-disable-next-line unicorn/no-null
           trigger={null}
@@ -158,9 +196,9 @@ export function AdminLayout({
           {renderMenu(collapsed, true)}
         </Layout.Sider>
 
+        {/* 主内容区域 */}
         <Layout>
           <Layout.Header className="flex items-center px-1 h-16 w-full">
-            {/* 展开/收起图标 */}
             <div
               className="hidden md:inline-flex"
               onClick={() => setCollapsed(!collapsed)}
@@ -178,7 +216,7 @@ export function AdminLayout({
               <Icon icon="eva:menu-2-fill" width={24} height={24} />
             </div>
 
-            {/* 右侧操作 */}
+            {/* 右上角操作 */}
             <div className="flex items-center gap-3 ms-auto">
               <ColorPicker
                 size="small"
