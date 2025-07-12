@@ -97,7 +97,7 @@ export default function BookMarks() {
     <div className="flex flex-col lg:flex-row gap-4 h-full">
       {contextHolder}
       {isLoading && <FullScreenOverlay />}
-      <div className="flex flex-col gap-4 h-full w-full lg:w-[900px] p-6">
+      <div className="flex flex-col gap-4 h-full w-full lg:w-[900px]">
         <BookmarkToolbar
           onAddClick={addBookMark}
           onSearchClick={() => setShowSearch(!showSearch)}

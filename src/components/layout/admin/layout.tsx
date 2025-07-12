@@ -235,7 +235,7 @@ export function AdminLayout({
             </div>
           </Layout.Header>
 
-          <Layout.Content className="m-4 overflow-auto rounded shadow h-[calc(100vh-64px)] bg-white">
+          <Layout.Content className="overflow-auto border-t border-slate-200 h-[calc(100vh-64px)] bg-white p-6">
             {children}
           </Layout.Content>
         </Layout>
