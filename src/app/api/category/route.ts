@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     if (!result.success) {
       return createErrorResponse('参数校验失败', 400, result.error.issues);
     }
-    const newCategory = await categoryService.create({
+    const newCategory = await categoryService.get_or_create({
       ...result.data,
       isPublic: result.data.isPublic ?? false,
       userId: userId,

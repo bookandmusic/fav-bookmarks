@@ -49,12 +49,16 @@ export function BookmarkForm({
   const handleFinish = async ({
     categoryId,
     icon,
+    description,
     ...rest
   }: BookmarkFormFields) => {
     const sanitizedValues = {
       ...rest,
-      categoryId: categoryId?.[categoryId.length - 1] ?? undefined,
-      icon: icon ?? undefined,
+      categoryId: categoryId?.[categoryId.length - 1],
+      // eslint-disable-next-line unicorn/no-null
+      icon: icon ?? null,
+      // eslint-disable-next-line unicorn/no-null
+      description: description ?? null,
     };
     await onFinish?.(sanitizedValues);
   };

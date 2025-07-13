@@ -69,7 +69,23 @@ export const bookmarkService = {
   async create(data: BookmarkCreate): Promise<BookMark> {
     return await prisma.bookMark.create({ data });
   },
-
+  async get_by_url(url: string, userId: number): Promise<BookMark | null> {
+    return await prisma.bookMark.findFirst({
+      where: {
+        url,
+        userId,
+      },
+    });
+  },
+  async create_or_update(data: BookmarkCreate): Promise<BookMark> {
+    const bookmark = await this.get_by_url(data.url, data.userId);
+    if (bookmark) {
+      return await this.update(bookmark.id, {
+        ...data,
+      });
+    }
+    return await this.create(data);
+  },
   async createMany(data: BookmarkCreate[]): Promise<{ count: number }> {
     return await prisma.bookMark.createMany({ data });
   },

@@ -10,6 +10,27 @@ export const categoryService = {
       data,
     });
   },
+
+  async get_by_name(
+    name: string,
+    type: CateType,
+    userId: number
+  ): Promise<Category | null> {
+    return await prisma.category.findFirst({
+      where: {
+        name,
+        type,
+        userId,
+      },
+    });
+  },
+  async get_or_create(data: CategoryCreate): Promise<Category> {
+    const category = await this.get_by_name(data.name, data.type, data.userId);
+    if (category) {
+      return category;
+    }
+    return this.create(data);
+  },
   async hasChildren(id: number): Promise<boolean> {
     const count = await prisma.category.count({
       where: {

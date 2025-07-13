@@ -7,10 +7,10 @@ export type CateType = 'Project' | 'BookMark';
 
 export interface CategoryFormValue {
   name: string;
-  icon?: string;
+  icon?: string | null;
   isPublic: boolean;
   type: CateType;
-  pid?: number;
+  pid?: number | null;
 }
 
 export type CategoryFormFields = {

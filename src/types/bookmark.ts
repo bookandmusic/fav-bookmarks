@@ -1,3 +1,5 @@
+import { CateType } from './category';
+
 export interface Bookmark {
   id: number;
   title: string;
@@ -23,8 +25,8 @@ export interface BookmarResponse {
 export interface BookmarkFormValue {
   title: string;
   url: string;
-  description?: string;
-  icon?: string;
+  description?: string | null;
+  icon?: string | null;
   categoryId: number;
   isPublic?: boolean;
 }
@@ -46,4 +48,19 @@ export interface BookmarkSearchFormValue {
   keyword?: string;
   categoryId?: number;
   isPublic?: boolean;
+}
+
+export interface BookmarkNode {
+  name: string;
+  icon?: string;
+  isPublic: boolean;
+  type: CateType;
+  bookmarks: {
+    title: string;
+    url: string;
+    icon?: string;
+    isPublic?: boolean;
+    description?: string;
+  }[];
+  children?: BookmarkNode[];
 }

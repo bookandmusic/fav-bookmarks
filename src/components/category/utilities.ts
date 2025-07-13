@@ -7,11 +7,11 @@ import { Category } from '@/types/category';
  */
 export const getCategoryPath = (
   categories: Category[],
-  categoryId?: number
+  categoryId?: number | null
 ): number[] => {
   const path: number[] = [];
 
-  const findCategory = (id?: number): void => {
+  const findCategory = (id?: number | null): void => {
     if (id === undefined) return;
 
     const category = categories.find((item) => item.id === id);

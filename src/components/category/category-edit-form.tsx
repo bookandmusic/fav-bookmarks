@@ -52,8 +52,10 @@ export const CategoryEditForm = ({
   const handleFinish = async (values: CategoryFormFields) => {
     const sanitizedValues = {
       ...values,
-      pid: values.pid?.at(-1),
-      icon: values.icon,
+      // eslint-disable-next-line unicorn/no-null
+      pid: values.pid?.at(-1) || null,
+      // eslint-disable-next-line unicorn/no-null
+      icon: values.icon || null,
     };
 
     await onFinish?.(sanitizedValues);

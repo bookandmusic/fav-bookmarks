@@ -10,8 +10,8 @@ import { categoryService } from '@/services/category';
 // 定义 PUT 请求的校验 Schema
 const putSchema = z.object({
   name: z.string().min(1),
-  pid: z.number().optional(),
-  icon: z.string().optional(),
+  pid: z.number().optional().nullable(),
+  icon: z.string().optional().nullable(),
   isPublic: z.boolean(),
 });
 

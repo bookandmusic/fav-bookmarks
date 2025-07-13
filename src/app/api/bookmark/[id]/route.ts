@@ -10,9 +10,9 @@ import { bookmarkService } from '@/services/bookmark';
 const putSchema = z.object({
   title: z.string().min(1),
   url: z.string().url(),
-  categoryId: z.number().int().optional(),
-  description: z.string().optional(),
-  icon: z.string().optional(),
+  categoryId: z.number().int(),
+  description: z.string().optional().nullable(),
+  icon: z.string().optional().nullable(),
   isPublic: z.boolean().optional(),
 });
 
