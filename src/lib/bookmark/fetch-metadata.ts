@@ -1,5 +1,7 @@
 import axios from 'axios';
+import * as chardet from 'chardet';
 import { load } from 'cheerio';
+import * as iconv from 'iconv-lite';
 
 export interface MetadataResult {
   icon: string | undefined;
@@ -28,15 +30,20 @@ export async function fetchMetadata(
   try {
     const response = await axios.get(targetUrl, {
       signal: controller.signal,
+      responseType: 'arraybuffer',
       headers: {
-        // 可选设置 User-Agent 避免被屏蔽
         'User-Agent': 'BookmarkFetcher/1.0',
       },
     });
 
     clearTimeout(timeoutId);
 
-    const html = response.data;
+    const buffer = Buffer.from(response.data);
+
+    // 检测编码（如 gb2312、utf-8）
+    const charset = chardet.detect(buffer) || 'utf8';
+    const html = iconv.decode(buffer, charset);
+
     const $ = load(html);
 
     // 解析 favicon
