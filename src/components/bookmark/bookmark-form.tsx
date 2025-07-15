@@ -118,19 +118,13 @@ export function BookmarkForm({
           <Input
             addonAfter={
               <Button
+                size="small"
                 type="text"
                 loading={isLoadingIcon}
                 disabled={!urlFieldValue || isLoadingIcon}
                 onClick={handleFetchFavicon}
                 icon={<Icon icon="streamline-plump:loading-circle" />}
-                style={{
-                  height: 18,
-                  width: 18,
-                  padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+                style={{ verticalAlign: 'middle' }}
               />
             }
           />

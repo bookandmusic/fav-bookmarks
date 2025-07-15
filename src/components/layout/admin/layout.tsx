@@ -27,7 +27,6 @@ const keyToPath: Record<string, string> = {
   tags: '/admin/tags',
   bookmarks: '/admin/bookmarks',
   projects: '/admin/projects',
-  syncBookmarks: '/admin/sync-bookmarks',
   profile: '/admin/profile',
 };
 
@@ -77,11 +76,6 @@ const adminMenus = [
     icon: <Icon icon="rivet-icons:settings" width={16} />,
     label: '系统管理',
     children: [
-      {
-        key: 'syncBookmarks',
-        icon: <Icon icon="mdi:web-sync" width={16} />,
-        label: '书签同步',
-      },
       {
         key: 'profile',
         icon: <Icon icon="fluent:person-24-filled" width={16} />,
@@ -198,7 +192,7 @@ export function AdminLayout({
 
         {/* 主内容区域 */}
         <Layout>
-          <Layout.Header className="flex items-center px-1 h-16 w-full">
+          <div className="flex items-center h-16 w-full px-6 bg-white">
             <div
               className="hidden md:inline-flex"
               onClick={() => setCollapsed(!collapsed)}
@@ -207,6 +201,7 @@ export function AdminLayout({
                 icon={collapsed ? 'gg:menu-left' : 'gg:menu-right'}
                 width={24}
                 height={24}
+                style={{ verticalAlign: 'middle' }}
               />
             </div>
             <div
@@ -230,10 +225,11 @@ export function AdminLayout({
                 <Avatar
                   size={32}
                   icon={<Icon icon="radix-icons:avatar" width={32} />}
+                  style={{ verticalAlign: 'middle' }}
                 />
               </Popover>
             </div>
-          </Layout.Header>
+          </div>
 
           <Layout.Content className="overflow-auto border-t border-slate-200 h-[calc(100vh-64px)] bg-white p-6">
             {children}

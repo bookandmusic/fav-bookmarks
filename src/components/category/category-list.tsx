@@ -47,6 +47,7 @@ export const CategoryList = ({
                   icon={item.icon || 'flat-color-icons:folder'}
                   width={20}
                   height={20}
+                  style={{ verticalAlign: 'middle' }}
                 />
                 <span>{item.name}</span>
               </div>

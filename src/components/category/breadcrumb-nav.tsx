@@ -15,6 +15,7 @@ export const BreadcrumbNav = ({
       icon={hasBack ? 'carbon:return' : 'tabler:current-location'}
       width={20}
       height={20}
+      style={{ verticalAlign: 'middle' }}
     />
     <span>{hasBack ? '返回上一级' : '暂无上一级'}</span>
   </div>

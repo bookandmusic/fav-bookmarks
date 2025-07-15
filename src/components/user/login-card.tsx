@@ -99,11 +99,27 @@ export function LoginCard({ error: initialError }: { error?: string }) {
       <Card
         style={{ width: 300 }}
         actions={[
-          <Button key={'gitee'} type="text" onClick={handleGiteeLogin}>
-            <Icon icon={'simple-icons:gitee'}></Icon>
+          <Button
+            key={'gitee'}
+            type="text"
+            onClick={handleGiteeLogin}
+            className="w-full h-full"
+          >
+            <Icon
+              icon={'simple-icons:gitee'}
+              style={{ verticalAlign: 'middle' }}
+            ></Icon>
           </Button>,
-          <Button key={'github'} type="text" onClick={handleGitHubLogin}>
-            <Icon icon={'simple-icons:github'}></Icon>
+          <Button
+            key={'github'}
+            type="text"
+            onClick={handleGitHubLogin}
+            className="w-full h-full"
+          >
+            <Icon
+              icon={'simple-icons:github'}
+              style={{ verticalAlign: 'middle' }}
+            ></Icon>
           </Button>,
         ]}
         title={'登录'}
@@ -114,13 +130,23 @@ export function LoginCard({ error: initialError }: { error?: string }) {
         <Form form={form} style={{ maxWidth: 600 }}>
           <Form.Item name={'name'} rules={[{ required: true }]}>
             <Input
-              prefix={<Icon icon={'mdi:account-outline'} />}
+              prefix={
+                <Icon
+                  icon={'mdi:account-outline'}
+                  style={{ verticalAlign: 'middle' }}
+                />
+              }
               placeholder="输入用户名"
             />
           </Form.Item>
           <Form.Item name={'password'} rules={[{ required: true }]}>
             <Input
-              prefix={<Icon icon={'mdi:lock-outline'} />}
+              prefix={
+                <Icon
+                  icon={'mdi:lock-outline'}
+                  style={{ verticalAlign: 'middle' }}
+                />
+              }
               type="password"
               placeholder="输入密码"
             />

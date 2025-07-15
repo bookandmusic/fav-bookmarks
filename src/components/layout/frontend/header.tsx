@@ -15,7 +15,12 @@ const menuItems = headerMenuItems.map((item) => {
     key: item.key,
     label: (
       <Link href={item.href} className={menuItemClass} key={item.key}>
-        <Icon icon={item.icon} width={16} className="shrink-0" />
+        <Icon
+          icon={item.icon}
+          width={16}
+          className="shrink-0"
+          style={{ verticalAlign: 'middle' }}
+        />
         <span className="leading-none">{item.title}</span>
       </Link>
     ),
@@ -46,7 +51,12 @@ export function Header({ userCard }: { userCard: React.ReactNode }) {
           <Dropdown menu={{ items: menuItems }} placement="topRight" arrow>
             <Button
               type="text"
-              icon={<Icon icon="solar:menu-dots-bold" />}
+              icon={
+                <Icon
+                  icon="solar:menu-dots-bold"
+                  style={{ verticalAlign: 'middle' }}
+                />
+              }
             ></Button>
           </Dropdown>
         </div>
@@ -55,7 +65,13 @@ export function Header({ userCard }: { userCard: React.ReactNode }) {
           <Popover placement="bottomRight" content={userCard}>
             <Avatar
               size={24}
-              icon={<Icon icon="radix-icons:avatar" width={20} />}
+              icon={
+                <Icon
+                  icon="radix-icons:avatar"
+                  width={20}
+                  style={{ verticalAlign: 'middle' }}
+                />
+              }
             />
           </Popover>
         </div>

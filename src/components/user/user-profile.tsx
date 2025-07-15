@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
 import { Icon } from '@iconify/react';
@@ -30,21 +30,40 @@ const goods = [
 
 const randomGood = goods[Math.floor(Math.random() * goods.length)];
 
-const handleLogout = () => {
-  signOut({ callbackUrl: '/login' }); // 默认会重定向到首页
-};
 export function UserProfileCard({ user }: { user: User }) {
+  const router = useRouter();
+
   return (
     <>
       <Card
         actions={[
-          <Button key={'gitee'} type="text">
-            <Link href={'/admin'}>
-              <Icon icon={'ic:baseline-admin-panel-settings'} width={18}></Icon>
-            </Link>
+          <Button
+            key={'gitee'}
+            type="text"
+            className="w-full h-full"
+            onClick={() => {
+              router.push('/admin');
+            }}
+          >
+            <Icon
+              icon={'ic:baseline-admin-panel-settings'}
+              width={18}
+              style={{ verticalAlign: 'middle' }}
+            />
           </Button>,
-          <Button key={'github'} type="text" onClick={handleLogout}>
-            <Icon icon={'ic:baseline-logout'} width={18}></Icon>
+          <Button
+            key={'github'}
+            type="text"
+            className="w-full h-full"
+            onClick={() => {
+              signOut({ callbackUrl: '/login' });
+            }}
+          >
+            <Icon
+              icon={'ic:baseline-logout'}
+              width={18}
+              style={{ verticalAlign: 'middle' }}
+            />
           </Button>,
         ]}
         className="max-w-[300px]"
