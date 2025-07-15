@@ -11,12 +11,16 @@ export const bookmarkService = {
     size,
     keyword,
     isPublic,
+    isDeleted,
+    userId,
   }: {
     page: number;
     size: number;
     categoryId?: number;
     keyword?: string;
     isPublic?: boolean;
+    isDeleted?: boolean;
+    userId: number;
   }): Promise<{
     data: BookMark[];
     pagination: {
@@ -30,10 +34,16 @@ export const bookmarkService = {
     if (isPublic !== undefined) {
       isPublicCondition = { isPublic: isPublic };
     }
+    let isDeletedCondition = {};
+    if (isDeleted !== undefined) {
+      isDeletedCondition = { isDeleted: isDeleted };
+    }
 
     const where = {
+      userId: userId,
       ...(categoryId ? { categoryId } : {}),
       ...isPublicCondition,
+      ...isDeletedCondition,
       ...(keyword
         ? {
             OR: [
@@ -104,10 +114,18 @@ export const bookmarkService = {
       data: updateData,
     });
   },
-
+  // 逻辑删除所有书签
+  async deleteAll(): Promise<{ count: number }> {
+    return prisma.bookMark.updateMany({ data: { isDeleted: true } });
+  },
   // 删除书签
   async delete(id: number): Promise<BookMark> {
     return prisma.bookMark.delete({
+      where: { id },
+    });
+  },
+  async get_by_id(id: number): Promise<BookMark | null> {
+    return prisma.bookMark.findUnique({
       where: { id },
     });
   },

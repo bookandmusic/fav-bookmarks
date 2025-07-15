@@ -14,6 +14,7 @@ const putSchema = z.object({
   description: z.string().optional().nullable(),
   icon: z.string().optional().nullable(),
   isPublic: z.boolean().optional(),
+  isDeleted: z.boolean().optional(),
 });
 
 // 辅助函数：生成错误响应
@@ -62,13 +63,19 @@ export async function DELETE(
   }
 
   try {
-    const deleted = await bookmarkService.delete(bookmarkId);
-
-    if (!deleted) {
-      return createErrorResponse('书签不存在或已被删除', 404);
+    const bookmark = await bookmarkService.get_by_id(bookmarkId);
+    if (!bookmark) {
+      return createErrorResponse('书签不存在', 404);
     }
+    if (!bookmark.isDeleted) {
+      await bookmarkService.update(bookmarkId, {
+        isDeleted: true,
+      });
+      return NextResponse.json(bookmark);
+    }
+    await bookmarkService.delete(bookmarkId);
 
-    return NextResponse.json(deleted);
+    return NextResponse.json(bookmark);
   } catch (error) {
     logger.error(`删除书签失败 (ID: ${bookmarkId})`, error);
     return createErrorResponse('删除书签失败', 500);

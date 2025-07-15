@@ -67,27 +67,19 @@ export const categoryService = {
   // 查询当前用户或公开的分类
   async findMany(
     type: CateType,
-    isPublic?: boolean,
-    userId?: number
+    userId: number,
+    isPublic?: boolean
   ): Promise<Category[]> {
-    if (userId !== undefined) {
-      // 如果有 userId，则只查询该用户的数据
-      return await prisma.category.findMany({
-        where: { userId, type },
-        orderBy: [{ id: 'desc' }],
-      });
-    }
-
+    let isPublicCondition = {};
     if (isPublic !== undefined) {
-      // 没有 userId 但有 isPublic，则只查询公开的
-      return await prisma.category.findMany({
-        where: { isPublic: isPublic, type },
-        orderBy: [{ id: 'desc' }],
-      });
+      isPublicCondition = { isPublic: isPublic };
     }
 
-    // 都没有则返回空数组
-    return [];
+    // 如果有 userId，则只查询该用户的数据
+    return await prisma.category.findMany({
+      where: { userId, type, ...isPublicCondition },
+      orderBy: [{ id: 'desc' }],
+    });
   },
 
   // 更新分类

@@ -9,6 +9,7 @@ import {
   deleteBookmark,
   updateBookmark,
 } from '@/client/book-mark-client';
+import { BookmarkUploadModal } from '@/components/bookmark/bookmark-upload-modal';
 import {
   BookmarkEditDrawer,
   BookmarkList,
@@ -74,6 +75,9 @@ export default function BookMarks() {
     asyncWrapper(deleteBookmark(item.id), {
       onSuccess: () => {
         setInfo(`书签：${item.title}，删除成功`);
+        if (bookmarkList.length == 1) {
+          setPage(page - 1);
+        }
         setReload(!reload);
       },
       onError: setError,
@@ -93,6 +97,31 @@ export default function BookMarks() {
     setModalOpen(true);
   };
 
+  const [uploadModalVisible, setUploadModalVisible] = useState(false);
+
+  const onUploadHandler = () => {
+    setUploadModalVisible(true);
+  };
+  const [isDeleted, setIsDeleted] = useState(false);
+  const recoverBookMark = (item: Bookmark) => {
+    setIsLoading(true);
+    const values = {
+      ...item,
+      isDeleted: false,
+    };
+    asyncWrapper(updateBookmark(item.id, values), {
+      onSuccess: () => {
+        setInfo(`书签：${values.title}，还原成功`);
+        if (bookmarkList.length == 1) {
+          setPage(page - 1);
+        }
+        setReload(!reload);
+        setModalOpen(false);
+      },
+      onError: setError,
+      onFinally: () => setIsLoading(false),
+    });
+  };
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-full">
       {contextHolder}
@@ -100,16 +129,28 @@ export default function BookMarks() {
       <div className="flex flex-col gap-4 h-full w-full lg:w-[900px]">
         <BookmarkToolbar
           onAddClick={addBookMark}
-          onSearchClick={() => setShowSearch(!showSearch)}
+          onSearchClick={() => {
+            setSearchParams(undefined);
+            setShowSearch(!showSearch);
+          }}
           onAllClick={() => {
+            setIsDeleted(false);
             setSearchParams(undefined);
             setShowSearch(false);
+          }}
+          onUploadHandler={onUploadHandler}
+          onTrashHandler={() => {
+            setShowSearch(false);
+            setSearchParams({ isDeleted: true });
+            setIsDeleted(true);
+            setPage(1);
           }}
         ></BookmarkToolbar>
         {showSearch && (
           <BookmarkSearch
             categoryList={categoryList}
             onFinish={(values) => {
+              values.isDeleted = isDeleted;
               setSearchParams(values);
             }}
           />
@@ -120,6 +161,8 @@ export default function BookMarks() {
             bookmarkList={bookmarkList}
             onEdit={editBookMark}
             onDelete={delBookMark}
+            onRecover={recoverBookMark}
+            isDeleted={isDeleted}
           />
         </div>
 
@@ -154,6 +197,12 @@ export default function BookMarks() {
         open={modalOpen}
         setOpen={setModalOpen}
         setError={setError}
+      />
+      <BookmarkUploadModal
+        uploadModalVisible={uploadModalVisible}
+        setUploadModalVisible={setUploadModalVisible}
+        setError={setError}
+        setInfo={setInfo}
       />
     </div>
   );

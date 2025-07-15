@@ -6,12 +6,14 @@ export async function fetchBookmarks({
   keyword,
   isPublic,
   categoryId,
+  isDeleted,
 }: {
   page?: number;
   size?: number;
-  keyword?: string | undefined;
-  isPublic?: boolean | undefined;
-  categoryId?: number | undefined;
+  keyword?: string;
+  isPublic?: boolean;
+  categoryId?: number;
+  isDeleted?: boolean;
 }) {
   // 构建查询参数对象
   const queryParameters = new URLSearchParams();
@@ -23,6 +25,8 @@ export async function fetchBookmarks({
   if (isPublic !== undefined)
     queryParameters.append('isPublic', isPublic.toString());
   if (categoryId) queryParameters.append('categoryId', categoryId.toString());
+  if (isDeleted !== undefined)
+    queryParameters.append('isDeleted', isDeleted.toString());
 
   // 构建完整URL
   const url = `/api/bookmark?${queryParameters.toString()}`;

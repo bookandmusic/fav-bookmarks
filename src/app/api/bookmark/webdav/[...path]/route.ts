@@ -1,6 +1,7 @@
 import { parseBookmarkHTML } from '@/lib/bookmark/parse-bookmark-file';
 import { saveBookmarkNodes } from '@/lib/bookmark/save-bookmark';
 import { logger } from '@/lib/logger';
+import { bookmarkService } from '@/services/bookmark';
 import { userService } from '@/services/user';
 
 function unauthorizedResponse() {
@@ -57,6 +58,7 @@ export async function PUT(
     const nodes = parseBookmarkHTML(fileContent);
 
     // 保存到数据库（递归插入分类和书签）
+    await bookmarkService.deleteAll();
     await saveBookmarkNodes(nodes, user.id);
     return new Response(
       JSON.stringify({

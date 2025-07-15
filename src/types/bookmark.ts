@@ -29,6 +29,7 @@ export interface BookmarkFormValue {
   icon?: string | null;
   categoryId: number;
   isPublic?: boolean;
+  isDeleted?: boolean;
 }
 
 export type BookmarkFormFields = {
@@ -48,6 +49,7 @@ export interface BookmarkSearchFormValue {
   keyword?: string;
   categoryId?: number;
   isPublic?: boolean;
+  isDeleted?: boolean;
 }
 
 export interface BookmarkNode {

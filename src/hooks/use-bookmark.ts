@@ -22,6 +22,7 @@ export function useBookMarkData(setError: (error: Error | undefined) => void) {
       keyword: searchParameters?.keyword,
       isPublic: searchParameters?.isPublic,
       categoryId: searchParameters?.categoryId,
+      isDeleted: searchParameters?.isDeleted,
     })
       .then((response) => {
         setbookmarkList(response.data);

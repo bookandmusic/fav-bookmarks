@@ -35,8 +35,8 @@ export async function GET(request: NextRequest) {
   try {
     const categories = await categoryService.findMany(
       cateType,
-      isPublic,
-      userId
+      userId,
+      isPublic
     );
     const transformedCategories = replaceNullWithUndefined(categories);
     return NextResponse.json(transformedCategories);

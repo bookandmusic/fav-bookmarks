@@ -38,6 +38,7 @@ export async function saveBookmarkNodes(
             description: meta?.description,
             categoryId: category.id,
             userId,
+            isDeleted: false,
           };
           await bookmarkService.create_or_update(bookmark);
         })

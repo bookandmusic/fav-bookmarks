@@ -10,10 +10,14 @@ export const BookmarkList = memo(
     bookmarkList,
     onEdit,
     onDelete,
+    isDeleted,
+    onRecover,
   }: {
     bookmarkList: Bookmark[];
     onEdit?: (item: Bookmark) => void;
     onDelete?: (item: Bookmark) => void;
+    isDeleted?: boolean;
+    onRecover?: (item: Bookmark) => void;
   }) => {
     const [modal, contextHolder] = Modal.useModal();
     const confirmDelete = (item: Bookmark) => {
@@ -54,9 +58,14 @@ export const BookmarkList = memo(
                 description={item.description}
               />
               <div className="w-full flex gap-2 justify-start m-2">
-                {onEdit && (
+                {!isDeleted && onEdit && (
                   <Button type="text" onClick={() => onEdit(item)}>
                     编辑
+                  </Button>
+                )}
+                {isDeleted && onRecover && (
+                  <Button type="text" onClick={() => onRecover(item)}>
+                    还原
                   </Button>
                 )}
                 {onDelete && (

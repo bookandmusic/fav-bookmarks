@@ -33,6 +33,11 @@ const querySchema = z
       if (value === 'false') return false;
       if (typeof value === 'boolean') return value;
     }, z.boolean().optional()),
+    isDeleted: z.preprocess((value) => {
+      if (value === 'true') return true;
+      if (value === 'false') return false;
+      if (typeof value === 'boolean') return value;
+    }, z.boolean().optional()),
   })
   .strict();
 
@@ -57,13 +62,18 @@ export async function GET(request: NextRequest) {
     if (!result.success) {
       return createErrorResponse('查询参数校验失败', 400, result.error.issues);
     }
-
+    const userId = await authenticateRequest();
+    if (!userId) {
+      return createErrorResponse('用户未登录', 401);
+    }
     const data = await bookmarkService.findByMany({
       categoryId: result.data.categoryId,
       page: result.data.page,
       size: result.data.size,
       keyword: result.data.keyword,
       isPublic: result.data.isPublic,
+      isDeleted: result.data.isDeleted ?? false,
+      userId,
     });
     const transformedBookmarks = replaceNullWithUndefined(data);
     return NextResponse.json(transformedBookmarks);

@@ -55,6 +55,7 @@ model Category {
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   bookmarks   BookMark[]
   projects    Project[]
+  isDeleted    Boolean     @default(false)
 
   @@map("category")
   @@index([userId])
@@ -74,6 +75,7 @@ model BookMark {
   isPublic    Boolean     @default(false)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  isDeleted    Boolean     @default(false)
 
   @@map("bookmark")
   @@index([userId])
@@ -88,6 +90,7 @@ model Tag {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   projectTags ProjectTag[]
+  isDeleted    Boolean     @default(false)
 
   @@map("tag")
   @@unique([name, userId]) // 每个用户标签名唯一
@@ -109,6 +112,7 @@ model Project {
   isPublic    Boolean      @default(false)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+  isDeleted    Boolean      @default(false)
   projectTags ProjectTag[]
 
   @@map("project")
