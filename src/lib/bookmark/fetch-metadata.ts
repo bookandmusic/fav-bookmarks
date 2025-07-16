@@ -40,11 +40,28 @@ export async function fetchMetadata(
 
     const buffer = Buffer.from(response.data);
 
-    // 检测编码（如 gb2312、utf-8）
-    const charset = chardet.detect(buffer) || 'utf8';
-    const html = iconv.decode(buffer, charset);
+    // 优先从meta标签提取字符集
+    const utf8Html = iconv.decode(buffer, 'utf8');
+    const $ = load(utf8Html);
 
-    const $ = load(html);
+    let charset = $('meta[charset]').attr('charset');
+    if (!charset) {
+      const contentTypeMeta = $('meta[http-equiv="Content-Type"]').attr(
+        'content'
+      );
+      if (contentTypeMeta) {
+        const charsetMatch = contentTypeMeta.match(/charset=(.+)/i);
+        if (charsetMatch) {
+          charset = charsetMatch[1];
+        }
+      }
+    }
+
+    // 使用真实字符集重新解码
+    const finalCharset =
+      charset?.toLowerCase() || chardet.detect(buffer) || 'utf8';
+    const decodedHtml = iconv.decode(buffer, finalCharset);
+    const $$ = load(decodedHtml);
 
     // 解析 favicon
     let iconHref =
@@ -71,13 +88,13 @@ export async function fetchMetadata(
 
     const finalIconUrl = isValidIcon ? iconUrl : undefined;
 
-    // 解析 title
-    const title = $('title').text().trim() || undefined;
+    // 解析 title 使用真实字符集解析
+    const title = $$('title').text().trim() || undefined;
 
     // 解析 description
     const description =
-      $('meta[name="description"]').attr('content')?.trim() ||
-      $('meta[property="og:description"]').attr('content')?.trim() ||
+      $$('meta[name="description"]').attr('content')?.trim() ||
+      $$('meta[property="og:description"]').attr('content')?.trim() ||
       undefined;
 
     return {
