@@ -13,10 +13,11 @@ const cateTypeEnum = z.enum(['Project', 'BookMark']);
 // GET /api/category
 const querySchema = z.object({
   type: cateTypeEnum.optional().default('BookMark'),
-  isPublic: z
-    .string()
-    .optional()
-    .transform((value) => value === 'true'),
+  isPublic: z.preprocess((value) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    if (typeof value === 'boolean') return value;
+  }, z.boolean().optional()),
 });
 export async function GET(request: NextRequest) {
   const userId = await authenticateRequest();
