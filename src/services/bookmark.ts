@@ -129,4 +129,13 @@ export const bookmarkService = {
       where: { id },
     });
   },
+  async findPublicMany({ userId }: { userId?: number }): Promise<BookMark[]> {
+    return userId
+      ? prisma.bookMark.findMany({
+          where: { userId },
+        })
+      : prisma.bookMark.findMany({
+          where: { isPublic: true },
+        });
+  },
 };

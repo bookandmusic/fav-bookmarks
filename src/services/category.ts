@@ -103,4 +103,15 @@ export const categoryService = {
       where: { id },
     });
   },
+
+  async findPublicMany({ userId }: { userId?: number }): Promise<Category[]> {
+    if (userId) {
+      return prisma.category.findMany({
+        where: { userId },
+      });
+    }
+    return prisma.category.findMany({
+      where: { isPublic: true },
+    });
+  },
 };
