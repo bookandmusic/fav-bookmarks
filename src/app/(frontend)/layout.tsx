@@ -28,7 +28,7 @@ export default async function Layout({
         style={{ backgroundImage: 'url("/bg.jpg")' }}
       >
         <Header userCard={<UserProfileCard user={user!} />} />
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex flex-1">
           {children}
         </div>
         <Footer />
