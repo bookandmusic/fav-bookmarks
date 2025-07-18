@@ -1,7 +1,7 @@
 import { withAuth } from 'next-auth/middleware';
 
-// 定义公开路径（未登录也可以访问）
 const publicPaths = ['/login', '/register'];
+
 const staticFileExtensions = [
   '.js',
   '.css',
@@ -25,28 +25,29 @@ const staticFileExtensions = [
 export default withAuth({
   callbacks: {
     authorized({ req, token }) {
-      const pathname = req.nextUrl.pathname;
-      if (pathname.includes('/webdav/')) {
-        return true;
-      }
+      const { pathname } = req.nextUrl;
+
+      // 放行 webdav 路径
+      if (pathname.includes('/webdav/')) return true;
+
+      // 放行静态资源
       if (
         staticFileExtensions.some((extension) => pathname.endsWith(extension))
-      ) {
+      )
         return true;
-      }
 
-      // 如果是公开路径，放行
+      // 放行公开路径
       const isPublic = publicPaths.some(
-        (path) => pathname === path || pathname.startsWith(path + '/')
+        (path) => pathname === path || pathname.startsWith(`${path}/`)
       );
       if (isPublic) return true;
-
-      // 否则要求登录（token 必须存在）
-      return !!token;
+      if (pathname.startsWith('/api') || pathname.startsWith('/admin'))
+        return !!token;
+      return true;
     },
   },
   pages: {
-    signIn: '/login', // 未登录跳转页面
+    signIn: '/login',
   },
 });
 

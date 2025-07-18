@@ -1,9 +1,11 @@
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 
-import { AdminLayout } from '@/components/layout/admin/layout';
-import { authOptions } from '@/lib/auth/options';
-import { userService } from '@/services/user';
+import { AdminLayout } from '@/admin/components/layout/layout';
+import { authOptions } from '@/admin/lib/auth/options';
+import { userService } from '@/admin/services/user';
+
+import '@ant-design/v5-patch-for-react-19';
 
 export default async function Layout({
   children,

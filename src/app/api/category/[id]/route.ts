@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import z from 'zod';
 
-import { authenticateRequest } from '@/lib/auth/auth-middleware';
-import { createErrorResponse } from '@/lib/http-helper';
-import { logger } from '@/lib/logger';
-import { categoryService } from '@/services/category';
+import { authenticateRequest } from '@/admin/lib/auth/auth-middleware';
+import { logger } from '@/admin/lib/logger';
+import { createErrorResponse } from '@/admin/lib/response';
+import { categoryService } from '@/admin/services/category';
 
 // 定义 PUT 请求的校验 Schema
 const putSchema = z.object({

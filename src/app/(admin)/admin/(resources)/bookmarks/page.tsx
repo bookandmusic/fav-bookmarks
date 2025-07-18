@@ -8,20 +8,23 @@ import {
   createBookmark,
   deleteBookmark,
   updateBookmark,
-} from '@/client/book-mark-client';
-import { BookmarkUploadModal } from '@/components/bookmark/bookmark-upload-modal';
+} from '@/admin/client/book-mark-client';
+import { asyncWrapper } from '@/admin/client/wrapper';
+import { BookmarkUploadModal } from '@/admin/components/bookmark/bookmark-upload-modal';
 import {
   BookmarkEditDrawer,
   BookmarkList,
   BookmarkSearch,
   BookmarkToolbar,
-} from '@/components/bookmark/index';
-import { FullScreenOverlay } from '@/components/loading';
-import { useBookMarkData } from '@/hooks/use-bookmark';
-import { useCategoryData } from '@/hooks/use-category';
-import { useNotification } from '@/hooks/use-notification';
-import { asyncWrapper } from '@/lib/utilities';
-import { Bookmark, BookmarkFormValue } from '@/types/bookmark';
+} from '@/admin/components/bookmark/index';
+import { FullScreenOverlay } from '@/admin/components/loading';
+import { useBookMarkData } from '@/admin/hooks/use-bookmark';
+import { useCategoryData } from '@/admin/hooks/use-category';
+import { useNotification } from '@/admin/hooks/use-notification';
+import { Bookmark } from '@/admin/types/bookmark/base';
+import { BookmarkFormValue } from '@/admin/types/bookmark/form';
+
+import '@ant-design/v5-patch-for-react-19';
 
 export default function BookMarks() {
   const { setError, setInfo, contextHolder } = useNotification();

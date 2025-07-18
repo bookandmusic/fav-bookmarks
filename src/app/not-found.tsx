@@ -1,6 +1,6 @@
 import { Button, Result } from 'antd';
 
-import { BaseLayout } from '@/components/layout/base';
+import { BaseLayout } from '@/frontend/components/layout/base';
 
 import '@ant-design/v5-patch-for-react-19';
 

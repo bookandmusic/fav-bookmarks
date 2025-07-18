@@ -1,38 +1,25 @@
-import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 
-import { Footer } from '@/components/layout/frontend/footer';
-import { Header } from '@/components/layout/frontend/header';
-import { UserProfileCard } from '@/components/user/user-profile';
-import { authOptions } from '@/lib/auth/options';
-import { userService } from '@/services/user';
+import { User } from '@prisma/client';
+
+import { authOptions } from '@/admin/lib/auth/options';
+import { userService } from '@/admin/services/user';
+import { RootLayout } from '@/frontend/components/layout/layout';
+
+import '@ant-design/v5-patch-for-react-19';
 
 export default async function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  let user: User | undefined;
   const session = await getServerSession(authOptions);
-  if (!session) {
-    redirect('/login');
+  if (session) {
+    const object = await userService.findUserByUniqueKey(session.user.name);
+    if (object) {
+      user = object;
+    }
   }
-  const user = await userService.findUserByUniqueKey(session.user.name);
-  if (!user) {
-    redirect('/login');
-  }
-
-  return (
-    <>
-      <div
-        className="flex flex-col w-full h-full min-h-screen"
-        style={{ backgroundImage: 'url("/bg.jpg")' }}
-      >
-        <Header userCard={<UserProfileCard user={user!} />} />
-        <div className="flex flex-1">
-          {children}
-        </div>
-        <Footer />
-      </div>
-    </>
-  );
+  return <RootLayout user={user}>{children} </RootLayout>;
 }

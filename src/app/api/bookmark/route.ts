@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { z } from 'zod';
 
-import { authenticateRequest } from '@/lib/auth/auth-middleware';
-import { createErrorResponse } from '@/lib/http-helper';
-import { logger } from '@/lib/logger';
-import { replaceNullWithUndefined } from '@/lib/utilities';
-import { bookmarkService } from '@/services/bookmark';
+import { authenticateRequest } from '@/admin/lib/auth/auth-middleware';
+import { logger } from '@/admin/lib/logger';
+import { replaceNullWithUndefined } from '@/admin/lib/null-to-undefined';
+import { createErrorResponse } from '@/admin/lib/response';
+import { bookmarkService } from '@/admin/services/bookmark';
 
 // ---------- 查询参数校验 Schema ----------
 const querySchema = z

@@ -8,18 +8,21 @@ import {
   createCategory,
   deleteCategory,
   updateCategory,
-} from '@/client/category-client';
+} from '@/admin/client/category-client';
+import { asyncWrapper } from '@/admin/client/wrapper';
 import {
   BreadcrumbNav,
   CategoryEditDrawer,
   CategoryList,
   CategoryTabs,
-} from '@/components/category/index';
-import { FullScreenOverlay } from '@/components/loading';
-import { useCategory } from '@/hooks/use-category';
-import { useNotification } from '@/hooks/use-notification';
-import { asyncWrapper } from '@/lib/utilities';
-import { Category, CategoryFormValue } from '@/types/category';
+} from '@/admin/components/category/index';
+import { FullScreenOverlay } from '@/admin/components/loading';
+import { useCategory } from '@/admin/hooks/use-category';
+import { useNotification } from '@/admin/hooks/use-notification';
+import { Category } from '@/admin/types/category/base';
+import { CategoryFormValue } from '@/admin/types/category/form';
+
+import '@ant-design/v5-patch-for-react-19';
 
 export default function Categories() {
   const { setError, setInfo, contextHolder } = useNotification();

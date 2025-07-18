@@ -1,6 +1,6 @@
 // prisma/seed.ts
-import { userService } from "@/services/user";
-import { Role } from "@/types/user";
+import { userService } from "@/admin/services/user";
+import { Role } from "@/admin/types/user";
 
 export async function main() {
   try {
@@ -22,4 +22,4 @@ export async function main() {
 }
 
 // 执行种子脚本
-main()
+main();

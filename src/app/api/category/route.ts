@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { z } from 'zod';
 
-import { authenticateRequest } from '@/lib/auth/auth-middleware';
-import { createErrorResponse } from '@/lib/http-helper';
-import { logger } from '@/lib/logger';
-import { replaceNullWithUndefined } from '@/lib/utilities';
-import { categoryService } from '@/services/category';
+import { authenticateRequest } from '@/admin/lib/auth/auth-middleware';
+import { logger } from '@/admin/lib/logger';
+import { replaceNullWithUndefined } from '@/admin/lib/null-to-undefined';
+import { createErrorResponse } from '@/admin/lib/response';
+import { categoryService } from '@/admin/services/category';
 
 const cateTypeEnum = z.enum(['Project', 'BookMark']);
 

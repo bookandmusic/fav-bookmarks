@@ -1,8 +1,8 @@
-import { parseBookmarkHTML } from '@/lib/bookmark/parse-bookmark-file';
-import { saveBookmarkNodes } from '@/lib/bookmark/save-bookmark';
-import { logger } from '@/lib/logger';
-import { bookmarkService } from '@/services/bookmark';
-import { userService } from '@/services/user';
+import { parseBookmarkHTML } from '@/admin/lib/bookmark/parse-bookmark-file';
+import { saveBookmarkNodes } from '@/admin/lib/bookmark/save-bookmark';
+import { logger } from '@/admin/lib/logger';
+import { bookmarkService } from '@/admin/services/bookmark';
+import { userService } from '@/admin/services/user';
 
 function unauthorizedResponse() {
   return new Response('Unauthorized', {

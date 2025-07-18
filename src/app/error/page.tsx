@@ -2,7 +2,7 @@
 
 import { Button, Result } from 'antd';
 
-import { BaseLayout } from '@/components/layout/base';
+import { BaseLayout } from '@/frontend/components/layout/base';
 
 export default function ErrorPage() {
   return (

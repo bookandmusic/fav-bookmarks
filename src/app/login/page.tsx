@@ -1,5 +1,6 @@
-import { BaseLayout } from '@/components/layout/base';
-import { LoginCard } from '@/components/user/login-card';
+import { LoginCard } from '@/admin/components/user/login-card';
+import { BaseLayout } from '@/frontend/components/layout/base';
+
 export default async function Login({
   searchParams,
 }: {

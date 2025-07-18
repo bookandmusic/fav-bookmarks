@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 
-import { fetchMetadata } from '@/lib/bookmark/fetch-metadata';
+import { fetchMetadata } from '@/admin/lib/bookmark/fetch-metadata';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);

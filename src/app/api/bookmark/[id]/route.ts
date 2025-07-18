@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import z from 'zod';
 
-import { createErrorResponse } from '@/lib/http-helper';
-import { logger } from '@/lib/logger';
-import { bookmarkService } from '@/services/bookmark';
+import { logger } from '@/admin/lib/logger';
+import { createErrorResponse } from '@/admin/lib/response';
+import { bookmarkService } from '@/admin/services/bookmark';
 
 // 定义 PUT 请求的校验 Schema
 const putSchema = z.object({

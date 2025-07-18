@@ -5,11 +5,11 @@ import { NextResponse } from 'next/server';
 import { IncomingForm } from 'formidable';
 import { Readable, Writable } from 'node:stream';
 
-import { authenticateRequest } from '@/lib/auth/auth-middleware';
-import { parseBookmarkHTML } from '@/lib/bookmark/parse-bookmark-file';
-import { saveBookmarkNodes } from '@/lib/bookmark/save-bookmark';
-import { createErrorResponse } from '@/lib/http-helper';
-import { logger } from '@/lib/logger';
+import { authenticateRequest } from '@/admin/lib/auth/auth-middleware';
+import { parseBookmarkHTML } from '@/admin/lib/bookmark/parse-bookmark-file';
+import { saveBookmarkNodes } from '@/admin/lib/bookmark/save-bookmark';
+import { logger } from '@/admin/lib/logger';
+import { createErrorResponse } from '@/admin/lib/response';
 
 export const config = {
   api: {
