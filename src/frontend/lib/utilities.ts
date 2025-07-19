@@ -1,10 +1,9 @@
-import { Category } from '@prisma/client';
-
 import { authenticateRequest } from '@/admin/lib/auth/auth-middleware';
 import { replaceNullWithUndefined } from '@/admin/lib/null-to-undefined';
 import { bookmarkService } from '@/admin/services/bookmark';
 import { categoryService } from '@/admin/services/category';
 import { Bookmark } from '@/admin/types/bookmark/base';
+import { Category } from '@/admin/types/category/base';
 
 export async function getBookmarkCategoryData() {
   try {
