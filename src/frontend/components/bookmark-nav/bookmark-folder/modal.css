@@ -1,0 +1,28 @@
+/* 全屏 Modal 样式 */
+.custom-fullscreen-modal .ant-modal {
+  top: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+}
+
+.custom-fullscreen-modal .ant-modal-content {
+  height: 100vh !important;
+  width: 100vw !important;
+  border-radius: 0 !important;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  backdrop-filter: blur(20px);
+  background-color: rgba(255, 255, 255, 0.3); /* 半透明白色 */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.custom-fullscreen-modal .ant-modal-body {
+  flex: 1;
+  overflow: auto;
+  padding: 0 !important;
+}

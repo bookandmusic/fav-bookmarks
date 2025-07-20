@@ -57,17 +57,27 @@ const CategoryTree: React.FC<CategoryTreeProperties> = ({
               <div
                 style={indentStyle}
                 className="flex items-center justify-between cursor-pointer select-none"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  onSelect(c.id);
-                  if (hasChildren(c.id)) toggleOpen(c.id);
-                }}
               >
-                <span>{c.name}</span>
+                {/* 标题点击区域 */}
+                <span
+                  className="flex-1"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSelect(c.id);
+                  }}
+                >
+                  {c.name}
+                </span>
+
+                {/* 折叠图标 */}
                 {hasChildren(c.id) && (
                   <span
                     className="inline-block w-4 text-center"
                     aria-hidden="true"
+                    onClick={(event) => {
+                      event.stopPropagation(); // 防止冒泡触发上面的 onClick
+                      toggleOpen(c.id);
+                    }}
                   >
                     <Icon
                       icon={

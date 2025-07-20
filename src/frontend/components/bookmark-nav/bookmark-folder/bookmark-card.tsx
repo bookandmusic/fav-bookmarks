@@ -7,6 +7,8 @@ import { twMerge } from 'tailwind-merge';
 import { Bookmark } from '@/admin/types/bookmark/base';
 import { Category } from '@/admin/types/category/base';
 
+import './modal.css';
+
 export interface FolderNode extends Category {
   children: FolderNode[];
   bookmarks: Bookmark[];
@@ -43,41 +45,41 @@ export function BookmarkCard({ node }: { node: FolderNode }) {
     <>
       {content}
       <Modal
-        title={node.name}
-        open={open}
-        onCancel={() => setOpen(false)}
+        // eslint-disable-next-line unicorn/no-null
+        title={null}
         // eslint-disable-next-line unicorn/no-null
         footer={null}
-        width={900}
-        styles={{
-          body: {
-            padding: 0,
-          },
-        }}
+        open={open}
+        onCancel={() => setOpen(false)}
+        wrapClassName="custom-fullscreen-modal"
       >
-        <div className="h-[70vh] overflow-y-auto p-3">
-          <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
-            {node.bookmarks.map((b) => (
-              <Card
-                key={b.id}
-                hoverable
-                className="bg-white"
-                onClick={() => window.open(b.url, '_blank')}
-              >
-                <div
-                  className="text-base font-semibold mb-1 truncate"
-                  title={b.title}
+        <div className="w-full h-full overflow-y-auto flex justify-center">
+          <div className="w-full max-w-[900px] px-4 py-6">
+            {/* 自定义 Title 区域 */}
+            <div className="text-xl font-semibold mb-4">{node.name}</div>
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
+              {node.bookmarks.map((b) => (
+                <Card
+                  key={b.id}
+                  hoverable
+                  className="bg-white"
+                  onClick={() => window.open(b.url, '_blank')}
                 >
-                  {b.title}
-                </div>
-                <div className="text-sm text-gray-500 truncate" title={b.url}>
-                  {b.url}
-                </div>
-              </Card>
-            ))}
-            {node.children.map((c) => (
-              <BookmarkCard key={c.id} node={c} />
-            ))}
+                  <div
+                    className="text-base font-semibold mb-1 truncate"
+                    title={b.title}
+                  >
+                    {b.title}
+                  </div>
+                  <div className="text-sm text-gray-500 truncate" title={b.url}>
+                    {b.url}
+                  </div>
+                </Card>
+              ))}
+              {node.children.map((c) => (
+                <BookmarkCard key={c.id} node={c} />
+              ))}
+            </div>
           </div>
         </div>
       </Modal>
